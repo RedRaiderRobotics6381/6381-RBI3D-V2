@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 // import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvAim;
+// import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvAim;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -55,30 +55,6 @@ public class RobotContainer
   //                                                                driverXbox.getHID()::getAButtonPressed,
   //                                                                driverXbox.getHID()::getXButtonPressed,
   //                                                                driverXbox.getHID()::getBButtonPressed);
-
-  // Applies deadbands and inverts controls because joysticks
-  // are back-right positive while robot
-  // controls are front-left positive
-  // left stick controls translation
-  // right stick controls the rotational velocity 
-  // buttons are quick rotation positions to different ways to face
-  // and a button will yaw the robot towards a target.
-  // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  AbsoluteDriveAdvAim closedAbsoluteDriveAdvAim = new AbsoluteDriveAdvAim(drivebase,
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
-                                                                                                  OperatorConstants.LEFT_Y_DEADBAND) *
-                                                                                                  DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
-                                                                                                  OperatorConstants.LEFT_X_DEADBAND) *
-                                                                                                  DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightX(),
-                                                                                                  OperatorConstants.RIGHT_X_DEADBAND) *
-                                                                                                  .5,
-                                                                    driverXbox.povUp(),
-                                                                    driverXbox.povDown(),
-                                                                    driverXbox.povRight(),
-                                                                    driverXbox.povLeft(),
-                                                                    driverXbox.a());
 
 
   /**
