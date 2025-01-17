@@ -69,10 +69,10 @@ public final class Constants
   }
 
   public static class ArmConstants {
-    public static final int ARM_MOTOR_PORT = 15;
-    public static final int ARM_OUT_POSE = 0;
-    public static final int ARM_UP_POSE = 0;
-    public static final int ARM_MIDDLE_POSE = 0;
+    public static final int ARM_MOTOR_PORT = 12;
+    public static final int ARM_OUT_POSE = 115;
+    public static final int ARM_UP_POSE = 65;
+    public static final int ARM_MIDDLE_POSE = 90;
   }
 
   public static class ServoConstants {

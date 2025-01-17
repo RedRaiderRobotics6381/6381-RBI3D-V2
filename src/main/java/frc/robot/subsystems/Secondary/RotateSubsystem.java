@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkMax;
 // import com.revrobotics.spark.SparkSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -21,6 +22,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -28,32 +30,39 @@ import com.revrobotics.spark.SparkClosedLoopController;
 public class RotateSubsystem extends SubsystemBase {
 
     public SparkMax rotateMotor;
-    private RelativeEncoder rotateEncoder;
+    private AbsoluteEncoder rotateEncoder;
     public SparkClosedLoopController  rotatePIDController;
     public SparkMaxSim rotateMotorSim;
     public SparkRelativeEncoderSim rotateEncoderSim;
-    private double kLeaderP = 0.0005, kLeaderI = 0.0, kLeaderD = 0.0;
-    private double kLeaderFF = 0.0005;
+    private double kLeaderP = 0.005, kLeaderI = 0.0, kLeaderD = 0.0;
+    private double kLeaderFF = 0.000;
     private double kLeaderOutputMin = -1.0;
     private double kLeaderOutputMax = 1.0;
-    private double kLeaderMaxRPM = 5676;
-    private double kLeaderMaxAccel = 10000;
+    private double kLeaderMaxRPM = 250;
+    private double kLeaderMaxAccel = 250;
     
 
     public RotateSubsystem() {
-        rotateMotor = new SparkMax(21, MotorType.kBrushless);
+        rotateMotor = new SparkMax(Constants.ArmConstants.ARM_MOTOR_PORT, MotorType.kBrushless);
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
         SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
 
         rotatePIDController = rotateMotor.getClosedLoopController();
 
-        rotateEncoder = rotateMotor.getEncoder();
+        rotateEncoder = rotateMotor.getAbsoluteEncoder();
+
+        encoderConfig
+            .positionConversionFactor(360);
+        // rotateEncoder.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
 
         leaderConfig
-            .inverted(false)
+            .inverted(true)
             .voltageCompensation(12.0)
-            .smartCurrentLimit(80)
-            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(20)
+            .apply(encoderConfig)
+            .idleMode(IdleMode.kCoast)
             .closedLoop
                 .pidf(kLeaderP, kLeaderI, kLeaderD, kLeaderFF)
                 .outputRange(kLeaderOutputMin, kLeaderOutputMax)
@@ -63,10 +72,11 @@ public class RotateSubsystem extends SubsystemBase {
                     .maxVelocity(kLeaderMaxRPM);
         rotateMotor.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+
         //TODO: Add soft limits
         leaderSoftLimit
-        .forwardSoftLimit(1) 
-        .reverseSoftLimit(1)
+        .forwardSoftLimit(60.0) 
+        .reverseSoftLimit(120.0)
         .apply(leaderSoftLimit);
             
         // Add motors to the simulation
