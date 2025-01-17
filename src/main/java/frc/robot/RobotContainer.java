@@ -10,7 +10,7 @@ import edu.wpi.first.math.MathUtil;
 // import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+// import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -27,7 +27,7 @@ import frc.robot.subsystems.Secondary.RotateSubsystem;
 // import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvAim;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
-import swervelib.SwerveInputStream;
+// import swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -44,24 +44,6 @@ public class RobotContainer
                                                                                 "swerve/neo"));
 
   private final RotateSubsystem rotateSubsystem = new RotateSubsystem();                                                                              
-  // // Applies deadbands and inverts controls because joysticks
-  // // are back-right positive while robot
-  // // controls are front-left positive
-  // // left stick controls translation
-  // // right stick controls the rotational velocity 
-  // // buttons are quick rotation positions to different ways to face
-  // // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  // AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
-  //                                                                () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
-  //                                                                                              OperatorConstants.LEFT_Y_DEADBAND),
-  //                                                                () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
-  //                                                                                              OperatorConstants.DEADBAND),
-  //                                                                () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
-  //                                                                                              OperatorConstants.RIGHT_X_DEADBAND),
-  //                                                                driverXbox.getHID()::getYButtonPressed,
-  //                                                                driverXbox.getHID()::getAButtonPressed,
-  //                                                                driverXbox.getHID()::getXButtonPressed,
-  //                                                                driverXbox.getHID()::getBButtonPressed);
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -89,64 +71,64 @@ public class RobotContainer
                                                                     driverXbox.a(),
                                                                     driverXbox.leftStick());
 
-  /**
-   * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
-   */
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverXbox.getLeftY() * -1,
-                                                                () -> driverXbox.getLeftX() * -1)
-                                                            .withControllerRotationAxis(driverXbox::getRightX)
-                                                            .deadband(OperatorConstants.DEADBAND)
-                                                            .scaleTranslation(0.8)
-                                                            .allianceRelativeControl(true);
+  // /**
+  //  * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
+  //  */
+  // SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+  //                                                               () -> driverXbox.getLeftY() * -1,
+  //                                                               () -> driverXbox.getLeftX() * -1)
+  //                                                           .withControllerRotationAxis(driverXbox::getRightX)
+  //                                                           .deadband(OperatorConstants.DEADBAND)
+  //                                                           .scaleTranslation(0.8)
+  //                                                           .allianceRelativeControl(true);
 
-  /**
-   * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
-   */
-  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
-                                                                                             driverXbox::getRightY)
-                                                           .headingWhile(true);
+  // /**
+  //  * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
+  //  */
+  // SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
+  //                                                                                            driverXbox::getRightY)
+  //                                                          .headingWhile(true);
 
 
-  // Applies deadbands and inverts controls because joysticks
-  // are back-right positive while robot
-  // controls are front-left positive
-  // left stick controls translation
-  // right stick controls the desired angle NOT angular rotation
-  Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
+  // // Applies deadbands and inverts controls because joysticks
+  // // are back-right positive while robot
+  // // controls are front-left positive
+  // // left stick controls translation
+  // // right stick controls the desired angle NOT angular rotation
+  // Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
 
-  // Applies deadbands and inverts controls because joysticks
-  // are back-right positive while robot
-  // controls are front-left positive
-  // left stick controls translation
-  // right stick controls the angular velocity of the robot
-  Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  // // Applies deadbands and inverts controls because joysticks
+  // // are back-right positive while robot
+  // // controls are front-left positive
+  // // left stick controls translation
+  // // right stick controls the angular velocity of the robot
+  // Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
-  Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+  // Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
 
-  SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                   () -> -driverXbox.getLeftY(),
-                                                                   () -> -driverXbox.getLeftX())
-                                                               .withControllerRotationAxis(() -> driverXbox.getRawAxis(2))
-                                                               .deadband(OperatorConstants.DEADBAND)
-                                                               .scaleTranslation(0.8)
-                                                               .allianceRelativeControl(true);
-  // Derive the heading axis with math!
-  SwerveInputStream driveDirectAngleSim     = driveAngularVelocitySim.copy()
-                                                                     .withControllerHeadingAxis(() -> Math.sin(
-                                                                                                    driverXbox.getRawAxis(
-                                                                                                        2) * Math.PI) * (Math.PI * 2),
-                                                                                                () -> Math.cos(
-                                                                                                    driverXbox.getRawAxis(
-                                                                                                        2) * Math.PI) *
-                                                                                                      (Math.PI * 2))
-                                                                     .headingWhile(true);
+  // SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(drivebase.getSwerveDrive(),
+  //                                                                  () -> -driverXbox.getLeftY(),
+  //                                                                  () -> -driverXbox.getLeftX())
+  //                                                              .withControllerRotationAxis(() -> driverXbox.getRawAxis(2))
+  //                                                              .deadband(OperatorConstants.DEADBAND)
+  //                                                              .scaleTranslation(0.8)
+  //                                                              .allianceRelativeControl(true);
+  // // Derive the heading axis with math!
+  // SwerveInputStream driveDirectAngleSim     = driveAngularVelocitySim.copy()
+  //                                                                    .withControllerHeadingAxis(() -> Math.sin(
+  //                                                                                                   driverXbox.getRawAxis(
+  //                                                                                                       2) * Math.PI) * (Math.PI * 2),
+  //                                                                                               () -> Math.cos(
+  //                                                                                                   driverXbox.getRawAxis(
+  //                                                                                                       2) * Math.PI) *
+  //                                                                                                     (Math.PI * 2))
+  //                                                                    .headingWhile(true);
 
-  Command driveFieldOrientedDirectAngleSim = drivebase.driveFieldOriented(driveDirectAngleSim);
+  // Command driveFieldOrientedDirectAngleSim = drivebase.driveFieldOriented(driveDirectAngleSim);
 
-  Command driveFieldOrientedAnglularVelocitySim = drivebase.driveFieldOriented(driveAngularVelocitySim);
+  // Command driveFieldOrientedAnglularVelocitySim = drivebase.driveFieldOriented(driveAngularVelocitySim);
 
-  Command driveSetpointGenSim = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
+  // Command driveSetpointGenSim = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -178,32 +160,19 @@ public class RobotContainer
 
     if (Robot.isSimulation())
     {
-      driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-      driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
+      driverXbox.back().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+      // driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
 
     }
     if (DriverStation.isTest())
     {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
-
       driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
-      driverXbox.leftBumper().onTrue(Commands.none());
-      driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
-      // driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      // driverXbox.b().whileTrue(
-      //     drivebase.driveToPose(
-      //         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-      //                         );
-      // driverXbox.start().whileTrue(Commands.none());
-      // driverXbox.back().whileTrue(Commands.none());
-      //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      //driverXbox.rightBumper().onTrue(Commands.none());
+      driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
       driverXbox.x().onTrue(rotateSubsystem.ForwardCmd());
       driverXbox.b().onTrue(rotateSubsystem.UpCmd());
@@ -211,6 +180,7 @@ public class RobotContainer
       // driverXbox.x().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE)));
       // driverXbox.b().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE)));
       // driverXbox.y().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE)));
+
     }
 
   }
@@ -229,5 +199,31 @@ public class RobotContainer
   public void setMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);
+  }
+
+  /**
+   * Sets the speed multiplier for the drivebase based on the state of the right and left bumpers on the driver's Xbox controller.
+   * If both bumpers are pressed, the speed multiplier is set to 1 (HighSpd).
+   * If either bumper is pressed, the speed multiplier is set to 0.75 (MedSpd).
+   * If neither bumper is pressed, the speed multiplier is set to 0.50 (LowSpd).
+   */
+  public void spencerButtons(){
+
+    if (driverXbox.getHID().getRightBumper() == true && driverXbox.getHID().getLeftBumper() == true){
+      //System.out.println("HighSpd");
+      DrivebaseConstants.Max_Speed_Multiplier = 1;
+    }
+
+    if (driverXbox.getHID().getRightBumper() == true && driverXbox.getHID().getLeftBumper() == false ||
+        driverXbox.getHID().getRightBumper() == false && driverXbox.getHID().getLeftBumper() == true){
+      //System.out.println("MedSpd");
+      DrivebaseConstants.Max_Speed_Multiplier = .875;
+    }
+
+    if (driverXbox.getHID().getRightBumper() == false && driverXbox.getHID().getLeftBumper() == false){
+      //System.out.println("LowSpd");
+      DrivebaseConstants.Max_Speed_Multiplier = .75;
+    }
+    
   }
 }

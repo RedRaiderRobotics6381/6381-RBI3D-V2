@@ -5,6 +5,7 @@
 package frc.robot.subsystems.Secondary;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -39,8 +40,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private RelativeEncoder followerEncoder;
   public SparkClosedLoopController  leaderPIDController;
   public SparkClosedLoopController  followerPIDController;
-  public SparkMaxSim leaderIntakeSim;
-  public SparkMaxSim followerIntakeSim;
+  public SparkFlexSim leaderIntakeSim;
+  public SparkFlexSim followerIntakeSim;
   public SparkRelativeEncoderSim leaderEncoderSim;
   public SparkRelativeEncoderSim followerEncoderSim;
   private double kLeaderP = 0.0005, kLeaderI = 0.0, kLeaderD = 0.0;

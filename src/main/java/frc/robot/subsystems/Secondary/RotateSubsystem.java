@@ -10,24 +10,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
-import com.revrobotics.spark.SparkMax;
-// import com.revrobotics.spark.SparkSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.sim.SparkFlexSim;
-// import com.revrobotics.sim.SparkMaxSim;
-// import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.AbsoluteEncoder;
-// import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 
@@ -39,7 +32,7 @@ public class RotateSubsystem extends SubsystemBase {
     public SparkFlexSim rotateMotorSim;
     public SparkAbsoluteEncoderSim rotateEncoderSim;
     private double kLeaderP = 0.005, kLeaderI = 0.0, kLeaderD = 0.0;
-    private double kLeaderFF = 0.000;
+    private double kLeaderFF = 0.0005;
     private double kLeaderOutputMin = -1.0;
     private double kLeaderOutputMax = 1.0;
     private double kLeaderMaxRPM = 250;
@@ -64,7 +57,7 @@ public class RotateSubsystem extends SubsystemBase {
             .voltageCompensation(12.0)
             .smartCurrentLimit(20)
             .apply(encoderConfig)
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .closedLoop
                 .pidf(kLeaderP, kLeaderI, kLeaderD, kLeaderFF)
                 .outputRange(kLeaderOutputMin, kLeaderOutputMax)
@@ -85,16 +78,21 @@ public class RotateSubsystem extends SubsystemBase {
         if (Robot.isSimulation()) {
             rotateMotorSim = new SparkFlexSim(rotateMotor, DCMotor.getNEO(1));
             rotateEncoderSim = new SparkAbsoluteEncoderSim(rotateMotor);
-            // rotateMotorSim.setVelocity(0);
-            // followerLauncherSim.setVelocity(0);
-            // feederLauncherSim.setVelocity(0);
+            rotateMotorSim.setPosition(90);
+            rotateEncoderSim.setPosition(90);
+            rotateMotorSim.setVelocity(0);
+            rotateEncoderSim.setVelocity(0);
         }
     }
     
     // // An accessor method to set the speed (technically the output percentage) of the launch wheel
     public void setArm(double pos) {
-        // rotateMotorL.set(speed);
-        rotatePIDController.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+        rotatePIDController.setReference(pos, SparkFlex.ControlType.kMAXMotionPositionControl);
+        if (Robot.isSimulation()) {
+            rotateMotorSim.setPosition(pos);
+            rotateEncoderSim.setPosition(pos);
+        }
+
 
     }
     
@@ -123,8 +121,8 @@ public class RotateSubsystem extends SubsystemBase {
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
         if (Robot.isSimulation()) {
-            rotateEncoderSim.setPosition(rotateMotorSim.getPosition());
-            rotateMotorSim.iterate(rotateEncoderSim.getPosition(), rotateMotorSim.getBusVoltage(),.005);
+            // rotateEncoderSim.setPosition(rotateMotorSim.getPosition());
+            // rotateMotorSim.iterate(rotateEncoderSim.getPosition(), rotateMotorSim.getBusVoltage(),.005);
         }
     }
     
