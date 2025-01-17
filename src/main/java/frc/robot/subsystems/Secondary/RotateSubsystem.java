@@ -19,21 +19,25 @@ import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.sim.SparkRelativeEncoderSim;
+import com.revrobotics.sim.SparkAbsoluteEncoderSim;
+import com.revrobotics.sim.SparkFlexSim;
+// import com.revrobotics.sim.SparkMaxSim;
+// import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.RelativeEncoder;
 // import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 
 public class RotateSubsystem extends SubsystemBase {
 
-    public SparkMax rotateMotor;
+    public SparkFlex rotateMotor;
     private AbsoluteEncoder rotateEncoder;
     public SparkClosedLoopController  rotatePIDController;
-    public SparkMaxSim rotateMotorSim;
-    public SparkRelativeEncoderSim rotateEncoderSim;
+    public SparkFlexSim rotateMotorSim;
+    public SparkAbsoluteEncoderSim rotateEncoderSim;
     private double kLeaderP = 0.005, kLeaderI = 0.0, kLeaderD = 0.0;
     private double kLeaderFF = 0.000;
     private double kLeaderOutputMin = -1.0;
@@ -43,8 +47,8 @@ public class RotateSubsystem extends SubsystemBase {
     
 
     public RotateSubsystem() {
-        rotateMotor = new SparkMax(Constants.ArmConstants.ARM_MOTOR_PORT, MotorType.kBrushless);
-        SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        rotateMotor = new SparkFlex(Constants.ArmConstants.ARM_MOTOR_PORT, MotorType.kBrushless);
+        SparkFlexConfig leaderConfig = new SparkFlexConfig();
         AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
         SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
 
@@ -54,9 +58,7 @@ public class RotateSubsystem extends SubsystemBase {
 
         encoderConfig
             .positionConversionFactor(360);
-        // rotateEncoder.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
-
         leaderConfig
             .inverted(true)
             .voltageCompensation(12.0)
@@ -81,8 +83,8 @@ public class RotateSubsystem extends SubsystemBase {
             
         // Add motors to the simulation
         if (Robot.isSimulation()) {
-            rotateMotorSim = new SparkMaxSim(rotateMotor, DCMotor.getNEO(1));
-            rotateEncoderSim = new SparkRelativeEncoderSim(rotateMotor);
+            rotateMotorSim = new SparkFlexSim(rotateMotor, DCMotor.getNEO(1));
+            rotateEncoderSim = new SparkAbsoluteEncoderSim(rotateMotor);
             // rotateMotorSim.setVelocity(0);
             // followerLauncherSim.setVelocity(0);
             // feederLauncherSim.setVelocity(0);
@@ -97,55 +99,23 @@ public class RotateSubsystem extends SubsystemBase {
     }
     
     public Command ForwardCmd() {
-    return this.startEnd(
+    return this.runOnce(
         () -> {
-            // rotateMotorL.set(-0.25);
-            // feederLauncher.set(-0.25);
-            //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-            setArm(Constants.ArmConstants.ARM_OUT_POSE);
-
-        },
-        () -> {
-            // rotateMotorL.set(0);
-            // feederLauncher.set(0);
-            //rotatePIDController.setReference(0, SparkMax.ControlType.kVelocity);
             setArm(Constants.ArmConstants.ARM_OUT_POSE);
         });
     }
 
     public Command MiddleCmd() {
-    return this.startEnd(
+    return this.runOnce(
         () -> {
-            // rotateMotorL.set(0.10);
-            // feederLauncher.set(0.10);
-            //rotatePIDController.setReference(500, SparkMax.ControlType.kVelocity);
             setArm(Constants.ArmConstants.ARM_MIDDLE_POSE);
-        },
-        () -> {
-            // rotateMotorL.set(0);
-            // feederLauncher.set(0);
-            // rotatePIDController.setReference(0, SparkMax.ControlType.kVelocity);
-            // rotatePIDController.setReference(0, SparkMax.ControlType.kVelocity);
-            setArm(Constants.ArmConstants.ARM_MIDDLE_POSE);
-
         });
     }
 
     public Command UpCmd() {
-      return this.startRun(
+      return this.runOnce(
           () -> {
-              // rotateMotorL.set(0.10);
-              // feederLauncher.set(0.10);
-              //rotatePIDController.setReference(500, SparkMax.ControlType.kVelocity);
               setArm(Constants.ArmConstants.ARM_UP_POSE);
-          },
-          () -> {
-              // rotateMotorL.set(0);
-              // feederLauncher.set(0);
-              // rotatePIDController.setReference(0, SparkMax.ControlType.kVelocity);
-              // rotatePIDController.setReference(0, SparkMax.ControlType.kVelocity);
-              setArm(Constants.ArmConstants.ARM_UP_POSE);
-  
           });
       }
     

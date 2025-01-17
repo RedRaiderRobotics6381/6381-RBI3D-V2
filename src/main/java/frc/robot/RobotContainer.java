@@ -205,9 +205,12 @@ public class RobotContainer
       //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       //driverXbox.rightBumper().onTrue(Commands.none());
 
-      driverXbox.x().whileTrue(rotateSubsystem.ForwardCmd());
-      driverXbox.b().whileTrue(rotateSubsystem.UpCmd());
-      driverXbox.y().whileTrue(rotateSubsystem.MiddleCmd());
+      driverXbox.x().onTrue(rotateSubsystem.ForwardCmd());
+      driverXbox.b().onTrue(rotateSubsystem.UpCmd());
+      driverXbox.y().onTrue(rotateSubsystem.MiddleCmd());
+      // driverXbox.x().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE)));
+      // driverXbox.b().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE)));
+      // driverXbox.y().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE)));
     }
 
   }

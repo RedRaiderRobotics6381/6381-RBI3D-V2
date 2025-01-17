@@ -1,7 +1,37 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "SPARK Flex [12]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK Flex [12] ABSOLUTE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK Flex [12] RELATIVE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [12] ABSOLUTE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
       "SPARK MAX [2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [2] ABSOLUTE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [2] RELATIVE ENCODER": {
         "header": {
           "open": true
         }
