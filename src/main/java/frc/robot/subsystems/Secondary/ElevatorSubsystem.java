@@ -4,18 +4,20 @@
 package frc.robot.subsystems.Secondary;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
 // import com.revrobotics.spark.SparkSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,16 +29,16 @@ import frc.robot.Robot;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    public SparkMax followerElevator;
-    public SparkMax leaderElevator;
-    private RelativeEncoder leaderEncoder;
-    private RelativeEncoder followerEncoder;
-    public SparkClosedLoopController  leaderPIDController;
-    public SparkClosedLoopController  followerPIDController;
-    public SparkMaxSim leaderElevatorSim;
-    public SparkMaxSim followerElevatorSim;
-    public SparkRelativeEncoderSim leaderEncoderSim;
-    public SparkRelativeEncoderSim followerEncoderSim;
+    public SparkFlex elevMtrLdr;
+    public SparkFlex elevMtrFlw;
+    private RelativeEncoder elevEncLdr;
+    private RelativeEncoder elevEncFlw;
+    public SparkClosedLoopController  elevPIDLdr;
+    public SparkClosedLoopController  elevPIDFlw;
+    public SparkFlexSim elevMtrLdrSim;
+    public SparkFlexSim elevMtrFlwSim;
+    public SparkRelativeEncoderSim elevEncLdrSim;
+    public SparkRelativeEncoderSim elevEncFlwSim;
     private double kLeaderP = 0.0005, kLeaderI = 0.0, kLeaderD = 0.0;
     private double kFollowerP = 0.0005, kFollowerI = 0.0, kFollowerD = 0.0;
     private double kLeaderFF = 0.0005, kFollowerFF = 0.0005;
@@ -49,19 +51,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     public ElevatorSubsystem() {
-        leaderElevator = new SparkMax(Constants.ElevatorConstants.LEFT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
-        followerElevator = new SparkMax(Constants.ElevatorConstants.RIGHT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
+        elevMtrLdr = new SparkFlex(Constants.ElevatorConstants.LEFT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
+        elevMtrFlw = new SparkFlex(Constants.ElevatorConstants.RIGHT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
 
-        SparkMaxConfig leaderConfig = new SparkMaxConfig();
-        SparkMaxConfig followerConfig = new SparkMaxConfig();
+        SparkFlexConfig leaderConfig = new SparkFlexConfig();
+        SparkFlexConfig followerConfig = new SparkFlexConfig();
+        EncoderConfig encoderConfig = new EncoderConfig();
         SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
         SoftLimitConfig followerSoftLimit = new SoftLimitConfig();
 
-        leaderPIDController = leaderElevator.getClosedLoopController();
-        followerPIDController = followerElevator.getClosedLoopController();
+        elevPIDLdr = elevMtrLdr.getClosedLoopController();
+        elevPIDFlw = elevMtrFlw.getClosedLoopController();
 
-        leaderEncoder = leaderElevator.getEncoder();
-        followerEncoder = followerElevator.getEncoder();
+        elevEncLdr = elevMtrLdr.getEncoder();
+        elevEncFlw = elevMtrFlw.getEncoder();
+        //todo: tune conversion factor to equal distance traveled by elevator
+        encoderConfig
+        .positionConversionFactor(360);
 
         leaderConfig
             .inverted(false)
@@ -75,16 +81,16 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .maxMotion
                     .maxAcceleration(kLeaderMaxAccel)
                     .maxVelocity(kLeaderMaxRPM);
-        leaderElevator.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevMtrLdr.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         //TODO: Add soft limits
         leaderSoftLimit
-        .forwardSoftLimit(1) 
-        .reverseSoftLimit(1)
+        .forwardSoftLimit(18) 
+        .reverseSoftLimit(0)
         .apply(leaderSoftLimit);
 
         followerConfig
-            .follow(leaderElevator, true)
+            .follow(elevMtrLdr, true)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
             .idleMode(IdleMode.kBrake)
@@ -95,34 +101,36 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .maxMotion
                     .maxAcceleration(kFollowerMaxAccel)
                     .maxVelocity(kFollowerMaxRPM);
-        followerElevator.configure(followerConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevMtrFlw.configure(followerConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         //TODO: Add soft limits
         followerSoftLimit
-        .forwardSoftLimit(1) 
-        .reverseSoftLimit(1)
-        .apply(leaderSoftLimit);
+        .forwardSoftLimit(18) 
+        .reverseSoftLimit(0)
+        .apply(followerSoftLimit);
 
         // Add motors to the simulation
         if (Robot.isSimulation()) {
-            leaderElevatorSim = new SparkMaxSim(leaderElevator, DCMotor.getNEO(1));
-            followerElevatorSim = new SparkMaxSim(followerElevator, DCMotor.getNEO(1));
-            leaderEncoderSim = new SparkRelativeEncoderSim(leaderElevator);
-            followerEncoderSim = new SparkRelativeEncoderSim(followerElevator);
-            // leaderElevatorSim.setVelocity(0);
-            // followerElevatorSim.setVelocity(0);
-            // feederLauncherSim.setVelocity(0);
+            elevMtrLdrSim = new SparkFlexSim(elevMtrLdr, DCMotor.getNEO(1));
+            elevMtrFlwSim = new SparkFlexSim(elevMtrFlw, DCMotor.getNEO(1));
+            elevEncLdrSim = new SparkRelativeEncoderSim(elevMtrLdr);
+            elevEncFlwSim = new SparkRelativeEncoderSim(elevMtrFlw);
+            elevMtrLdrSim.setPosition(0);
+            elevMtrFlwSim.setPosition(0);
+            elevEncLdrSim.setVelocity(0);
+            elevEncFlwSim.setVelocity(0);
+
         }
     }
     
     // // An accessor method to set the speed (technically the output percentage) of the launch wheel
     public void setElevatorHeight(double pos) {
         // leaderElevatorL.set(speed);
-        leaderPIDController.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+        elevPIDLdr.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
         if (Robot.isSimulation()) {
             // leaderElevatorSim.setVelocity(speed);
             // followerElevatorSim.setVelocity(speed);
-            followerPIDController.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+            elevPIDFlw.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
         }
     }
     
@@ -211,23 +219,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
-        if (Robot.isSimulation()) {
-            leaderEncoderSim.setPosition(leaderElevatorSim.getPosition());
-            followerEncoderSim.setPosition(followerElevatorSim.getPosition());
-            leaderElevatorSim.iterate(leaderEncoderSim.getPosition(), leaderElevatorSim.getBusVoltage(),.005);
-            followerElevatorSim.iterate(followerEncoderSim.getPosition(), followerElevatorSim.getBusVoltage(),.005);
-        }
+        // if (Robot.isSimulation()) {
+        //     elevEncLdrSim.setPosition(elevMtrLdrSim.getPosition());
+        //     elevEncFlwSim.setPosition(elevMtrFlwSim.getPosition());
+        //     elevMtrLdrSim.iterate(elevEncLdrSim.getPosition(), elevMtrLdrSim.getBusVoltage(),.005);
+        //     elevMtrFlwSim.iterate(elevEncFlwSim.getPosition(), elevMtrFlwSim.getBusVoltage(),.005);
+        // }
     }
     
     @Override
     public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.isSimulation()) {
-        SmartDashboard.putNumber("Elevator Lead Speed (RPM)", leaderEncoderSim.getPosition());
-        SmartDashboard.putNumber("Elevator Follower Speed (RPM)", followerEncoderSim.getPosition());
+        SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdrSim.getPosition());
+        SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlwSim.getPosition());
     } else {
-        SmartDashboard.putNumber("Elevator Lead Speed (RPM)", leaderEncoder.getPosition());
-        SmartDashboard.putNumber("Elevator Follower Speed (RPM)", followerEncoder.getPosition());
+        SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdr.getPosition());
+        SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlw.getPosition());
     }
     }
 }

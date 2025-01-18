@@ -88,8 +88,8 @@ public final class Constants
     public static final int LEFT_INTAKE_MOTOR_PORT = 16;
     public static final int RIGHT_INTAKE_MOTOR_PORT = 17;
 
-    public static final double INTAKE_SPEED = 0.5;
-    public static final double OUTTAKE_SPEED = -0.5;
+    public static final double INTAKE_SPEED = 500;
+    public static final double OUTTAKE_SPEED = -500;
     public static final double STOP_SPEED = 0;
   }
 }
