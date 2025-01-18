@@ -36,17 +36,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public SparkFlexSim intakeMotorFollowerSim;
   public SparkRelativeEncoderSim intakeEncoderLeaderSim;
   public SparkRelativeEncoderSim intakeEncoderFollowerSim;
-  private double kLeaderP = 0.0005, kLeaderI = 0.0, kLeaderD = 0.0;
-  private double kFollowerP = 0.0005, kFollowerI = 0.0, kFollowerD = 0.0;
-  private double kLeaderFF = 0.0005, kFollowerFF = 0.0005;
+  private double kLeaderP = 0.0001, kLeaderI = 0.0, kLeaderD = 0.0;
+  private double kFollowerP = 0.0001, kFollowerI = 0.0, kFollowerD = 0.0;
+  private double kLeaderFF = 0.0, kFollowerFF = 0.0;
   private double kLeaderOutputMin = -1.0, kFollowerOutputMin = -1.0;
   private double kLeaderOutputMax = 1.0, kFollowerOutputMax = 1.0;
   private double kLeaderMaxRPM = 5676, kFollowerMaxRPM = 5676;
   private double kLeaderMaxAccel = 10000, kFollowerMaxAccel = 10000;
   
   public IntakeSubsystem() {
-    intakeMotorLeader = new SparkFlex(Constants.IntakeConstants.LEFT_INTAKE_MOTOR_PORT, MotorType.kBrushless);
-    intakeMotorFollower = new SparkFlex(Constants.IntakeConstants.RIGHT_INTAKE_MOTOR_PORT, MotorType.kBrushless);
+    intakeMotorLeader = new SparkFlex(Constants.IntakeConstants.TOP_INTAKE_MOTOR_PORT, MotorType.kBrushless);
+    intakeMotorFollower = new SparkFlex(Constants.IntakeConstants.BOTTOM_INTAKE_MOTOR_PORT, MotorType.kBrushless);
     
     SparkFlexConfig leaderConfig = new SparkFlexConfig();
     SparkFlexConfig followerConfig = new SparkFlexConfig();
@@ -133,7 +133,7 @@ public class IntakeSubsystem extends SubsystemBase {
             runIntake(Constants.IntakeConstants.INTAKE_SPEED);
         },
         () -> {
-            runIntake(Constants.IntakeConstants.STOP_SPEED);
+            runIntake(Constants.IntakeConstants.HOLD_SPEED);
         }
       );
   }

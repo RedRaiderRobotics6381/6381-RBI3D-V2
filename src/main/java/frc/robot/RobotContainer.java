@@ -179,23 +179,23 @@ public class RobotContainer
 
       // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
       // engineerXbox.leftStick().and(engineerXbox.y()).whileTrue(intakeSubsystem.OuttakeCmd());
-      engineerXbox.x().whileTrue(intakeSubsystem.IntakeCmd());
-      // engineerXbox.y().whileTrue(intakeSubsystem.OuttakeCmd());
+      engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
+      engineerXbox.rightBumper().whileTrue(intakeSubsystem.OuttakeCmd());
 
       // engineerXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
       //                                          (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),
       //                                                 intakeSubsystem));
 
-      engineerXbox.x().onTrue(rotateSubsystem.ForwardCmd());
+      // engineerXbox.x().onTrue(rotateSubsystem.ForwardCmd());
       // engineerXbox.b().onTrue(rotateSubsystem.UpCmd());
       // engineerXbox.y().onTrue(rotateSubsystem.MiddleCmd());
-      // engineerXbox.x().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
-      // engineerXbox.b().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
-      engineerXbox.y().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
+      engineerXbox.x().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
+      engineerXbox.b().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
+      engineerXbox.y().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
-      // engineerXbox.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
-      // engineerXbox.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
-      // engineerXbox.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
+      engineerXbox.leftStick().and(engineerXbox.x()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
+      engineerXbox.leftStick().and(engineerXbox.b()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
+      engineerXbox.leftStick().and(engineerXbox.y()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
     }
 
   }

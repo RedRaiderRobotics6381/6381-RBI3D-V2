@@ -32,7 +32,8 @@ public class RotateSubsystem extends SubsystemBase {
     public SparkFlexSim rotateMotorSim;
     public SparkAbsoluteEncoderSim rotateEncoderSim;
     private double kLeaderP = 0.005, kLeaderI = 0.0, kLeaderD = 0.0;
-    private double kLeaderFF = 0.0005;
+    private double kLeaderFF = 0.0;
+
     private double kLeaderOutputMin = -1.0;
     private double kLeaderOutputMax = 1.0;
     private double kLeaderMaxRPM = 250;
@@ -51,28 +52,28 @@ public class RotateSubsystem extends SubsystemBase {
 
         encoderConfig
             .positionConversionFactor(360);
+
+        
+        //TODO: Add soft limits
+        leaderSoftLimit
+        .forwardSoftLimit(60.0) 
+        .reverseSoftLimit(150.0);
         
         leaderConfig
             .inverted(true)
             .voltageCompensation(12.0)
             .smartCurrentLimit(20)
             .apply(encoderConfig)
+            .apply(leaderSoftLimit)
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .pidf(kLeaderP, kLeaderI, kLeaderD, kLeaderFF)
                 .outputRange(kLeaderOutputMin, kLeaderOutputMax)
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .maxMotion
                     .maxAcceleration(kLeaderMaxAccel)
                     .maxVelocity(kLeaderMaxRPM);
         rotateMotor.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-
-        //TODO: Add soft limits
-        leaderSoftLimit
-        .forwardSoftLimit(60.0) 
-        .reverseSoftLimit(120.0)
-        .apply(leaderSoftLimit);
             
         // Add motors to the simulation
         if (Robot.isSimulation()) {
@@ -97,21 +98,21 @@ public class RotateSubsystem extends SubsystemBase {
     }
     
     public Command ForwardCmd() {
-    return this.runOnce(
+    return this.run(
         () -> {
             setArm(Constants.ArmConstants.ARM_OUT_POSE);
         });
     }
 
     public Command MiddleCmd() {
-    return this.runOnce(
+    return this.run(
         () -> {
             setArm(Constants.ArmConstants.ARM_MIDDLE_POSE);
         });
     }
 
     public Command UpCmd() {
-      return this.runOnce(
+      return this.run(
           () -> {
               setArm(Constants.ArmConstants.ARM_UP_POSE);
           });

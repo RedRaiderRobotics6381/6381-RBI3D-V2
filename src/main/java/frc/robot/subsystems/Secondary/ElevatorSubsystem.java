@@ -39,13 +39,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     public SparkFlexSim elevMtrFlwSim;
     public SparkRelativeEncoderSim elevEncLdrSim;
     public SparkRelativeEncoderSim elevEncFlwSim;
-    private double kLeaderP = 0.0005, kLeaderI = 0.0, kLeaderD = 0.0;
-    private double kFollowerP = 0.0005, kFollowerI = 0.0, kFollowerD = 0.0;
+    private double kLeaderP = 0.0001, kLeaderI = 0.0, kLeaderD = 0.0;
+    private double kFollowerP = 0.0001, kFollowerI = 0.0, kFollowerD = 0.0;
     private double kLeaderFF = 0.0005, kFollowerFF = 0.0005;
     private double kLeaderOutputMin = -1.0, kFollowerOutputMin = -1.0;
     private double kLeaderOutputMax = 1.0, kFollowerOutputMax = 1.0;
     private double kLeaderMaxRPM = 5676, kFollowerMaxRPM = 5676;
-    private double kLeaderMaxAccel = 10000, kFollowerMaxAccel = 10000;
+    private double kLeaderMaxAccel = 5000, kFollowerMaxAccel = 5000; //10000
     public DigitalInput limitSwitchL;
     public DigitalInput limitSwitchR;
     
@@ -67,12 +67,23 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevEncFlw = elevMtrFlw.getEncoder();
         //todo: tune conversion factor to equal distance traveled by elevator
         encoderConfig
-        .positionConversionFactor(360);
+        .positionConversionFactor(0.085240244);
+
+        leaderSoftLimit
+        .forwardSoftLimit(8.0) 
+        .reverseSoftLimit(-0.1);
+
+        //TODO: Add soft limits
+        followerSoftLimit
+        .forwardSoftLimit(8.0) 
+        .reverseSoftLimit(-0.1);
 
         leaderConfig
             .inverted(false)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
+            .apply(encoderConfig)
+            .apply(leaderSoftLimit)
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .pidf(kLeaderP, kLeaderI, kLeaderD, kLeaderFF)
@@ -82,17 +93,13 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .maxAcceleration(kLeaderMaxAccel)
                     .maxVelocity(kLeaderMaxRPM);
         elevMtrLdr.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        //TODO: Add soft limits
-        leaderSoftLimit
-        .forwardSoftLimit(18) 
-        .reverseSoftLimit(0)
-        .apply(leaderSoftLimit);
 
         followerConfig
             .follow(elevMtrLdr, true)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
+            .apply(encoderConfig)
+            .apply(followerSoftLimit)
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .pidf(kFollowerP, kFollowerI, kFollowerD, kFollowerFF)
@@ -102,12 +109,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .maxAcceleration(kFollowerMaxAccel)
                     .maxVelocity(kFollowerMaxRPM);
         elevMtrFlw.configure(followerConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        //TODO: Add soft limits
-        followerSoftLimit
-        .forwardSoftLimit(18) 
-        .reverseSoftLimit(0)
-        .apply(followerSoftLimit);
 
         // Add motors to the simulation
         if (Robot.isSimulation()) {
@@ -134,17 +135,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
     
-    public Command ElevatorPosCmd(double position) {
-        return this.run(
-            () -> {
-                // rotateMotorL.set(-0.25);
-                // feederLauncher.set(-0.25);
-                //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-                if(limitSwitchL.get() && limitSwitchR.get() == false){
-                    setElevatorHeight(position);
-            }}
-          );
-        }
+    // public Command ElevatorPosCmd(double position) {
+    //     return this.run(
+    //         () -> {
+    //             // rotateMotorL.set(-0.25);
+    //             // feederLauncher.set(-0.25);
+    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
+    //             // if(limitSwitchL.get() && limitSwitchR.get() == false){
+    //                 setElevatorHeight(position);
+    //         }
+    //       );
+    //     }
     // public Command TroughPoseCmd() {
     //     return this.run(
     //         () -> {
