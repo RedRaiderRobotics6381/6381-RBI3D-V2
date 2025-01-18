@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 // import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdgAim;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdg;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.IntakeSubsystem;
 import frc.robot.subsystems.Secondary.RotateSubsystem;
@@ -41,6 +41,7 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
+  final         CommandXboxController engineerXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
@@ -59,7 +60,7 @@ public class RobotContainer
   // also in this mode the POV buttons are used to quickly face a direction
   // and a button will yaw the robot towards a target.
   // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  Command AbsoluteDriveAdvHdgAim = new AbsoluteDriveAdvHdgAim(drivebase,
+  Command AbsoluteDriveAdvHdg = new AbsoluteDriveAdvHdg(drivebase,
                                                                     () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
                                                                                                   OperatorConstants.LEFT_Y_DEADBAND) *
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
@@ -68,11 +69,7 @@ public class RobotContainer
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
-                                                                    driverXbox.povUp(),
-                                                                    driverXbox.povDown(),
-                                                                    driverXbox.povRight(),
-                                                                    driverXbox.povLeft(),
-                                                                    driverXbox.a(),
+                                                                    () -> driverXbox.getHID().getPOV(),
                                                                     driverXbox.rightStick());
 
   // /**
@@ -159,8 +156,8 @@ public class RobotContainer
     //                             driveFieldOrientedAnglularVelocity :
     //                             driveFieldOrientedAnglularVelocitySim);
     drivebase.setDefaultCommand(!RobotBase.isSimulation() ?
-                                AbsoluteDriveAdvHdgAim :
-                                AbsoluteDriveAdvHdgAim);
+                                AbsoluteDriveAdvHdg :
+                                AbsoluteDriveAdvHdg);
 
     if (Robot.isSimulation())
     {
@@ -180,25 +177,25 @@ public class RobotContainer
 
 
 
-      // driverXbox.leftStick().and(driverXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
-      // driverXbox.leftStick().and(driverXbox.y()).whileTrue(intakeSubsystem.OuttakeCmd());
-      driverXbox.x().whileTrue(intakeSubsystem.IntakeCmd());
-      // driverXbox.y().whileTrue(intakeSubsystem.OuttakeCmd());
+      // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
+      // engineerXbox.leftStick().and(engineerXbox.y()).whileTrue(intakeSubsystem.OuttakeCmd());
+      engineerXbox.x().whileTrue(intakeSubsystem.IntakeCmd());
+      // engineerXbox.y().whileTrue(intakeSubsystem.OuttakeCmd());
 
-      driverXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
-                                               (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),
-                                                      intakeSubsystem));
+      // engineerXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
+      //                                          (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),
+      //                                                 intakeSubsystem));
 
-      // driverXbox.x().onTrue(rotateSubsystem.ForwardCmd());
-      // driverXbox.b().onTrue(rotateSubsystem.UpCmd());
-      // driverXbox.y().onTrue(rotateSubsystem.MiddleCmd());
-      // driverXbox.x().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
-      // driverXbox.b().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
-      // driverXbox.y().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
+      engineerXbox.x().onTrue(rotateSubsystem.ForwardCmd());
+      // engineerXbox.b().onTrue(rotateSubsystem.UpCmd());
+      // engineerXbox.y().onTrue(rotateSubsystem.MiddleCmd());
+      // engineerXbox.x().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
+      // engineerXbox.b().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
+      engineerXbox.y().onTrue(Commands.runOnce(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
-      driverXbox.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
-      driverXbox.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
-      driverXbox.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
+      // engineerXbox.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
+      // engineerXbox.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
+      // engineerXbox.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.ElevatorPosCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
     }
 
   }
