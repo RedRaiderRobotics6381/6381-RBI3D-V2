@@ -91,5 +91,6 @@ public final class Constants
     public static final double INTAKE_SPEED = 500;
     public static final double OUTTAKE_SPEED = -500;
     public static final double STOP_SPEED = 0;
+    public static final double HOLD_SPEED = 100;
   }
 }

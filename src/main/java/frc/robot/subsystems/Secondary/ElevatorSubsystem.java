@@ -29,16 +29,18 @@ import frc.robot.Robot;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    public SparkFlex elevMtrLdr;
-    public SparkFlex elevMtrFlw;
+    private SparkFlex elevMtrLdr;
+    private SparkFlex elevMtrFlw;
+    private SparkFlexConfig ldrCfg;
+    private SparkFlexConfig flwCfg;
     private RelativeEncoder elevEncLdr;
     private RelativeEncoder elevEncFlw;
     public SparkClosedLoopController  elevPIDLdr;
     public SparkClosedLoopController  elevPIDFlw;
-    public SparkFlexSim elevMtrLdrSim;
-    public SparkFlexSim elevMtrFlwSim;
-    public SparkRelativeEncoderSim elevEncLdrSim;
-    public SparkRelativeEncoderSim elevEncFlwSim;
+    private SparkFlexSim elevMtrLdrSim;
+    private SparkFlexSim elevMtrFlwSim;
+    private SparkRelativeEncoderSim elevEncLdrSim;
+    private SparkRelativeEncoderSim elevEncFlwSim;
     private double kLdrP = 0.0005, kLdrI = 0.0, kLdrD = 0.0;
     private double kFlwP = 0.0005, kFlwI = 0.0, kFlwD = 0.0;
     private double kLdrFF = 0.0005, kFlwFF = 0.0005;
@@ -54,8 +56,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevMtrLdr = new SparkFlex(Constants.ElevatorConstants.LEFT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
         elevMtrFlw = new SparkFlex(Constants.ElevatorConstants.RIGHT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
 
-        SparkFlexConfig ldrCfg = new SparkFlexConfig();
-        SparkFlexConfig flwCfg = new SparkFlexConfig();
+        ldrCfg = new SparkFlexConfig();
+        flwCfg = new SparkFlexConfig();
         // EncoderConfig encoderConfig = new EncoderConfig();
         // SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
         // SoftLimitConfig followerSoftLimit = new SoftLimitConfig();
