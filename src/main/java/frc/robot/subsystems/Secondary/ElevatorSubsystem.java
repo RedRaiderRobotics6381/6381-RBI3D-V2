@@ -75,11 +75,11 @@ public class ElevatorSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake);
         ldrCfg
             .encoder
-                .positionConversionFactor(.0854); //confirm conversion factor
+                .positionConversionFactor(0.085240244); //confirm conversion factor
         ldrCfg
             .softLimit
-                .forwardSoftLimit(18) 
-                .reverseSoftLimit(0);
+                .forwardSoftLimit(8.0) 
+                .reverseSoftLimit(-0.1);
         ldrCfg
             .closedLoop
                 .pidf(kLdrP, kLdrI, kLdrD, kLdrFF)

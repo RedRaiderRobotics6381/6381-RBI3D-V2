@@ -54,8 +54,8 @@ public final class Constants
   }
   
   public static class ElevatorConstants {
-    public static final int LEFT_ELEVATOR_MOTOR_PORT = 13;
-    public static final int RIGHT_ELEVATOR_MOTOR_PORT = 14;
+    public static final int LEFT_ELEVATOR_MOTOR_PORT = 9;
+    public static final int RIGHT_ELEVATOR_MOTOR_PORT = 13;
 
     public static final int START_POSE = 0;
     public static final int TROUGH_POSE = 0;
@@ -70,9 +70,9 @@ public final class Constants
 
   public static class ArmConstants {
     public static final int ARM_MOTOR_PORT = 12;
-    public static final int ARM_OUT_POSE = 115;
-    public static final int ARM_UP_POSE = 65;
-    public static final int ARM_MIDDLE_POSE = 90;
+    public static final int ARM_OUT_POSE = 200;
+    public static final int ARM_UP_POSE = 230;
+    public static final int ARM_MIDDLE_POSE = 260;
   }
 
   public static class ServoConstants {
@@ -85,8 +85,8 @@ public final class Constants
   }
 
   public static class IntakeConstants {
-    public static final int LEFT_INTAKE_MOTOR_PORT = 16;
-    public static final int RIGHT_INTAKE_MOTOR_PORT = 17;
+    public static final int LEFT_INTAKE_MOTOR_PORT = 10;
+    public static final int RIGHT_INTAKE_MOTOR_PORT = 11;
 
     public static final double INTAKE_SPEED = 500;
     public static final double OUTTAKE_SPEED = -500;
