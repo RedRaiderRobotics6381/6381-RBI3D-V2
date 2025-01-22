@@ -72,14 +72,14 @@ public class ElevatorSubsystem extends SubsystemBase {
             .inverted(false)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast);
         ldrCfg
             .encoder
                 .positionConversionFactor(0.085240244); //confirm conversion factor
         ldrCfg
             .softLimit
                 .forwardSoftLimit(8.0) 
-                .reverseSoftLimit(-0.1);
+                .reverseSoftLimit(-0.05);
         ldrCfg
             .closedLoop
                 .pidf(kLdrP, kLdrI, kLdrD, kLdrFF)
@@ -112,12 +112,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                     .maxAcceleration(kFlwMaxAccel)
                     .maxVelocity(kFlwMaxRPM);
         elevMtrFlw.configure(flwCfg,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        // //TODO: Add soft limits
-        // followerSoftLimit
-        // .forwardSoftLimit(18) 
-        // .reverseSoftLimit(0)
-        // .apply(followerSoftLimit);
 
         // Add motors to the simulation
         if (Robot.isSimulation()) {
@@ -136,11 +130,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     // // An accessor method to set the speed (technically the output percentage) of the launch wheel
     public void setElevatorHeight(double pos) {
         // leaderElevatorL.set(speed);
-        elevPIDLdr.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+        elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
         if (Robot.isSimulation()) {
             // leaderElevatorSim.setVelocity(speed);
             // followerElevatorSim.setVelocity(speed);
-            elevPIDFlw.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+            elevPIDFlw.setReference(pos, SparkMax.ControlType.kPosition);
         }
     }
     
@@ -155,76 +149,6 @@ public class ElevatorSubsystem extends SubsystemBase {
             }}
           );
         }
-    // public Command TroughPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command ReefLowPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command ReefMiddlePoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command ReefHighPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command AlgaeScorePoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.ALGAE_SCORE_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command AlgaePickUpPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.ALGAE_PICKUP_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command HumanPlayerPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.HUMAN_PLAYER_POSE);
-    //         }
-    //       );
-    //     }
 
     @Override
     public void simulationPeriodic() {

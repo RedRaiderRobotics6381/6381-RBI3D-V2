@@ -33,12 +33,12 @@ public class RotateSubsystem extends SubsystemBase {
     private SparkFlexConfig rotateMtrCfg;
     // private AbsoluteEncoderConfig encCfg;
     // private SoftLimitConfig rotateMtrSftLmtCfg;
-    private double kP = 0.0005, kI = 0.0, kD = 0.0;
-    private double kFF = 0.0005;
+    private double kP = 0.01, kI = 0.0, kD = 0.0;//p was 0.0005
+    private double kFF = 0.0;
     private double kOutputMin = -1.0;
     private double kOutputMax = 1.0;
-    private double kMaxRPM = 5676;
-    private double kMaxAccel = 20000;
+    private double kMaxRPM = 5676.0;
+    private double kMaxAccel = 20000.0;
 
     
 
@@ -96,7 +96,7 @@ public class RotateSubsystem extends SubsystemBase {
     
     // // An accessor method to set the speed (technically the output percentage) of the launch wheel
     public void setArm(double pos) {
-        rotatePID.setReference(pos, SparkFlex.ControlType.kMAXMotionPositionControl);
+        rotatePID.setReference(pos, SparkFlex.ControlType.kPosition);
         if (Robot.isSimulation()) {
             rotateMotorSim.setPosition(pos);
             rotateEncoderSim.setPosition(pos);
