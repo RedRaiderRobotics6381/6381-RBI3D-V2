@@ -56,11 +56,13 @@ public final class Constants
   public static class ElevatorConstants {
     public static final int LEFT_ELEVATOR_MOTOR_PORT = 9;
     public static final int RIGHT_ELEVATOR_MOTOR_PORT = 13;
+    public static final int LEFT_ELEVATOR_MOTOR_PORT = 9;
+    public static final int RIGHT_ELEVATOR_MOTOR_PORT = 13;
 
     public static final int START_POSE = 0;
     public static final int TROUGH_POSE = 0;
-    public static final int REEF_LOW_POSE = 0;
-    public static final int REEF_MIDDLE_POSE = 0;
+    public static final int REEF_LOW_POSE = 4;
+    public static final int REEF_MIDDLE_POSE = 8;
     public static final int REEF_HIGH_POSE = 0;
     public static final int ALGAE_SCORE_POSE = 0;
     public static final int ALGAE_PICKUP_POSE = 0;
@@ -75,14 +77,14 @@ public final class Constants
     public static final int ARM_MIDDLE_POSE = 260;
   }
 
-  public static class ServoConstants {
+  // public static class ServoConstants {
 
-    public static final int PINCHER_SERVO_PORT_1 = 1;
-    public static final int PINCHER_SERVO_PORT_2 = 2;
-    public static final int CLOSED_ANGLE = 90;
-    public static final int OPEN_ANGLE = 0;
+  //   public static final int PINCHER_SERVO_PORT_1 = 1;
+  //   public static final int PINCHER_SERVO_PORT_2 = 2;
+  //   public static final int CLOSED_ANGLE = 90;
+  //   public static final int OPEN_ANGLE = 0;
 
-  }
+  // }
 
   public static class IntakeConstants {
     public static final int LEFT_INTAKE_MOTOR_PORT = 10;

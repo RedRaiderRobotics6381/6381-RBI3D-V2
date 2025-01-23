@@ -136,6 +136,7 @@ public class IntakeSubsystem extends SubsystemBase {
         },
         () -> {
             runIntake(Constants.IntakeConstants.HOLD_SPEED);
+            runIntake(Constants.IntakeConstants.HOLD_SPEED);
         }
       );
   }

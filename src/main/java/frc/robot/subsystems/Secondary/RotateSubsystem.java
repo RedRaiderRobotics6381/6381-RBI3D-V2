@@ -106,21 +106,21 @@ public class RotateSubsystem extends SubsystemBase {
     }
     
     public Command ForwardCmd() {
-    return this.runOnce(
+    return this.run(
         () -> {
             setArm(Constants.ArmConstants.ARM_OUT_POSE);
         });
     }
 
     public Command MiddleCmd() {
-    return this.runOnce(
+    return this.run(
         () -> {
             setArm(Constants.ArmConstants.ARM_MIDDLE_POSE);
         });
     }
 
     public Command UpCmd() {
-      return this.runOnce(
+      return this.run(
           () -> {
               setArm(Constants.ArmConstants.ARM_UP_POSE);
           });
