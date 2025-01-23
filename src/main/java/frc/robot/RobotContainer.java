@@ -181,8 +181,6 @@ public class RobotContainer
       // engineerXbox.leftStick().and(engineerXbox.y()).whileTrue(intakeSubsystem.OuttakeCmd());
       engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
       engineerXbox.rightBumper().whileTrue(intakeSubsystem.OuttakeCmd());
-      engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
-      engineerXbox.rightBumper().whileTrue(intakeSubsystem.OuttakeCmd());
 
       // engineerXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
       //                                          (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),

@@ -56,8 +56,6 @@ public final class Constants
   public static class ElevatorConstants {
     public static final int LEFT_ELEVATOR_MOTOR_PORT = 9;
     public static final int RIGHT_ELEVATOR_MOTOR_PORT = 13;
-    public static final int LEFT_ELEVATOR_MOTOR_PORT = 9;
-    public static final int RIGHT_ELEVATOR_MOTOR_PORT = 13;
 
     public static final int START_POSE = 0;
     public static final int TROUGH_POSE = 0;
