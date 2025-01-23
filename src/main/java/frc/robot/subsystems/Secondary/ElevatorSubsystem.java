@@ -14,10 +14,10 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SoftLimitConfig;
+// import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.EncoderConfig;
+// import com.revrobotics.spark.config.EncoderConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -29,86 +29,89 @@ import frc.robot.Robot;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    public SparkFlex elevMtrLdr;
-    public SparkFlex elevMtrFlw;
+    private SparkFlex elevMtrLdr;
+    private SparkFlex elevMtrFlw;
+    private SparkFlexConfig ldrCfg;
+    private SparkFlexConfig flwCfg;
     private RelativeEncoder elevEncLdr;
     private RelativeEncoder elevEncFlw;
     public SparkClosedLoopController  elevPIDLdr;
     public SparkClosedLoopController  elevPIDFlw;
-    public SparkFlexSim elevMtrLdrSim;
-    public SparkFlexSim elevMtrFlwSim;
-    public SparkRelativeEncoderSim elevEncLdrSim;
-    public SparkRelativeEncoderSim elevEncFlwSim;
-    private double kLeaderP = 0.0001, kLeaderI = 0.0, kLeaderD = 0.0;
-    private double kFollowerP = 0.0001, kFollowerI = 0.0, kFollowerD = 0.0;
-    private double kLeaderFF = 0.0005, kFollowerFF = 0.0005;
-    private double kLeaderOutputMin = -1.0, kFollowerOutputMin = -1.0;
-    private double kLeaderOutputMax = 1.0, kFollowerOutputMax = 1.0;
-    private double kLeaderMaxRPM = 5676, kFollowerMaxRPM = 5676;
-    private double kLeaderMaxAccel = 5000, kFollowerMaxAccel = 5000; //10000
-    public DigitalInput limitSwitchL;
-    public DigitalInput limitSwitchR;
+    private SparkFlexSim elevMtrLdrSim;
+    private SparkFlexSim elevMtrFlwSim;
+    private SparkRelativeEncoderSim elevEncLdrSim;
+    private SparkRelativeEncoderSim elevEncFlwSim;
+    private double kLdrP = 0.0005, kLdrI = 0.0, kLdrD = 0.0;
+    private double kFlwP = 0.0005, kFlwI = 0.0, kFlwD = 0.0;
+    private double kLdrFF = 0.0005, kFlwFF = 0.0005;
+    private double kLdrOutputMin = -1.0, kFlwOutputMin = -1.0;
+    private double kLdrOutputMax = 1.0, kFlwOutputMax = 1.0;
+    private double kLdrMaxRPM = 5676, kFlwMaxRPM = 5676;
+    private double kLdrMaxAccel = 10000, kFlwMaxAccel = 10000;
+    public DigitalInput limitSwL;
+    public DigitalInput limitSwR;
     
 
     public ElevatorSubsystem() {
         elevMtrLdr = new SparkFlex(Constants.ElevatorConstants.LEFT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
         elevMtrFlw = new SparkFlex(Constants.ElevatorConstants.RIGHT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
 
-        SparkFlexConfig leaderConfig = new SparkFlexConfig();
-        SparkFlexConfig followerConfig = new SparkFlexConfig();
-        EncoderConfig encoderConfig = new EncoderConfig();
-        SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
-        SoftLimitConfig followerSoftLimit = new SoftLimitConfig();
+        ldrCfg = new SparkFlexConfig();
+        flwCfg = new SparkFlexConfig();
+        // EncoderConfig encoderConfig = new EncoderConfig();
+        // SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
+        // SoftLimitConfig followerSoftLimit = new SoftLimitConfig();
 
         elevPIDLdr = elevMtrLdr.getClosedLoopController();
         elevPIDFlw = elevMtrFlw.getClosedLoopController();
 
         elevEncLdr = elevMtrLdr.getEncoder();
         elevEncFlw = elevMtrFlw.getEncoder();
-        //todo: tune conversion factor to equal distance traveled by elevator
-        encoderConfig
-        .positionConversionFactor(0.085240244);
 
-        leaderSoftLimit
-        .forwardSoftLimit(8.0) 
-        .reverseSoftLimit(-0.1);
-
-        //TODO: Add soft limits
-        followerSoftLimit
-        .forwardSoftLimit(8.0) 
-        .reverseSoftLimit(-0.1);
-
-        leaderConfig
+        ldrCfg
             .inverted(false)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
-            .apply(encoderConfig)
-            .apply(leaderSoftLimit)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kCoast);
+        ldrCfg
+            .encoder
+                .positionConversionFactor(0.085240244); //confirm conversion factor
+        ldrCfg
+            .softLimit
+                .forwardSoftLimit(8.0) 
+                .reverseSoftLimit(-0.05);
+        ldrCfg
             .closedLoop
-                .pidf(kLeaderP, kLeaderI, kLeaderD, kLeaderFF)
-                .outputRange(kLeaderOutputMin, kLeaderOutputMax)
+                .pidf(kLdrP, kLdrI, kLdrD, kLdrFF)
+                .outputRange(kLdrOutputMin, kLdrOutputMax)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .maxMotion
-                    .maxAcceleration(kLeaderMaxAccel)
-                    .maxVelocity(kLeaderMaxRPM);
-        elevMtrLdr.configure(leaderConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                    .maxAcceleration(kLdrMaxAccel)
+                    .maxVelocity(kLdrMaxRPM);
+        elevMtrLdr.configure(ldrCfg,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
 
-        followerConfig
+        flwCfg
             .follow(elevMtrLdr, true)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
-            .apply(encoderConfig)
-            .apply(followerSoftLimit)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kBrake);
+        flwCfg
+            .encoder
+                .positionConversionFactor(.0854); //confirm conversion factor
+        flwCfg
+            .softLimit
+                .forwardSoftLimit(18) 
+                .reverseSoftLimit(0);
+        flwCfg
             .closedLoop
-                .pidf(kFollowerP, kFollowerI, kFollowerD, kFollowerFF)
-                .outputRange(kFollowerOutputMin, kFollowerOutputMax)
+                .pidf(kFlwP, kFlwI, kFlwD, kFlwFF)
+                .outputRange(kFlwOutputMin, kFlwOutputMax)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .maxMotion
-                    .maxAcceleration(kFollowerMaxAccel)
-                    .maxVelocity(kFollowerMaxRPM);
-        elevMtrFlw.configure(followerConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                    .maxAcceleration(kFlwMaxAccel)
+                    .maxVelocity(kFlwMaxRPM);
+        elevMtrFlw.configure(flwCfg,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Add motors to the simulation
         if (Robot.isSimulation()) {
@@ -127,95 +130,25 @@ public class ElevatorSubsystem extends SubsystemBase {
     // // An accessor method to set the speed (technically the output percentage) of the launch wheel
     public void setElevatorHeight(double pos) {
         // leaderElevatorL.set(speed);
-        elevPIDLdr.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+        elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
         if (Robot.isSimulation()) {
             // leaderElevatorSim.setVelocity(speed);
             // followerElevatorSim.setVelocity(speed);
-            elevPIDFlw.setReference(pos, SparkMax.ControlType.kMAXMotionPositionControl);
+            elevPIDFlw.setReference(pos, SparkMax.ControlType.kPosition);
         }
     }
     
-    // public Command ElevatorPosCmd(double position) {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             // if(limitSwitchL.get() && limitSwitchR.get() == false){
-    //                 setElevatorHeight(position);
-    //         }
-    //       );
-    //     }
-    // public Command TroughPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command ReefLowPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command ReefMiddlePoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command ReefHighPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command AlgaeScorePoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.ALGAE_SCORE_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command AlgaePickUpPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.ALGAE_PICKUP_POSE);
-    //         }
-    //       );
-    //     }
-    // public Command HumanPlayerPoseCmd() {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             setElevatorHeight(Constants.ElevatorConstants.HUMAN_PLAYER_POSE);
-    //         }
-    //       );
-    //     }
+    public Command ElevatorPosCmd(double position) {
+        return this.run(
+            () -> {
+                // rotateMotorL.set(-0.25);
+                // feederLauncher.set(-0.25);
+                //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
+                if(limitSwL.get() && limitSwR.get() == false){
+                    setElevatorHeight(position);
+            }}
+          );
+        }
 
     @Override
     public void simulationPeriodic() {

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.reduxrobotics.canand.CanandEventLoop;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -49,6 +51,8 @@ public class Robot extends TimedRobot
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
 
+    CanandEventLoop.getInstance();
+
     if (isSimulation())
     {
       DriverStation.silenceJoystickConnectionWarning(true);
@@ -90,6 +94,7 @@ public class Robot extends TimedRobot
     {
       m_robotContainer.setMotorBrake(false);
       disabledTimer.stop();
+      disabledTimer.reset();
     }
   }
 
