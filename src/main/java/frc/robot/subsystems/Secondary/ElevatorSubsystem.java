@@ -41,15 +41,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkFlexSim elevMtrFlwSim;
     private SparkRelativeEncoderSim elevEncLdrSim;
     private SparkRelativeEncoderSim elevEncFlwSim;
-    private double kLdrP = 0.0005, kLdrI = 0.0, kLdrD = 0.0;
-    private double kFlwP = 0.0005, kFlwI = 0.0, kFlwD = 0.0;
+    private double kLdrP = 0.5, kLdrI = 0.0, kLdrD = 0.0; //start p = 0.0005
+    private double kFlwP = 0.5, kFlwI = 0.0, kFlwD = 0.0;
     private double kLdrFF = 0.0005, kFlwFF = 0.0005;
     private double kLdrOutputMin = -1.0, kFlwOutputMin = -1.0;
     private double kLdrOutputMax = 1.0, kFlwOutputMax = 1.0;
-    private double kLdrMaxRPM = 5676, kFlwMaxRPM = 5676;
-    private double kLdrMaxAccel = 10000, kFlwMaxAccel = 10000;
-    public DigitalInput limitSwL;
-    public DigitalInput limitSwR;
+    private double kLdrMaxRPM = 1000, kFlwMaxRPM = 1000;
+    private double kLdrMaxAccel = 500, kFlwMaxAccel = 500;
+    // public DigitalInput limitSwL;
+    // public DigitalInput limitSwR;
     
 
     public ElevatorSubsystem() {
@@ -72,14 +72,14 @@ public class ElevatorSubsystem extends SubsystemBase {
             .inverted(false)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
         ldrCfg
             .encoder
                 .positionConversionFactor(0.085240244); //confirm conversion factor
         ldrCfg
             .softLimit
                 .forwardSoftLimit(8.0) 
-                .reverseSoftLimit(-0.05);
+                .reverseSoftLimit(-1.0);
         ldrCfg
             .closedLoop
                 .pidf(kLdrP, kLdrI, kLdrD, kLdrFF)
@@ -98,11 +98,11 @@ public class ElevatorSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake);
         flwCfg
             .encoder
-                .positionConversionFactor(.0854); //confirm conversion factor
+                .positionConversionFactor(.085240244); //confirm conversion factor
         flwCfg
             .softLimit
-                .forwardSoftLimit(18) 
-                .reverseSoftLimit(0);
+                .forwardSoftLimit(8.0) 
+                .reverseSoftLimit(-1.0); // -0.05
         flwCfg
             .closedLoop
                 .pidf(kFlwP, kFlwI, kFlwD, kFlwFF)
@@ -134,20 +134,49 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (Robot.isSimulation()) {
             // leaderElevatorSim.setVelocity(speed);
             // followerElevatorSim.setVelocity(speed);
-            elevPIDFlw.setReference(pos, SparkMax.ControlType.kPosition);
+            elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
         }
     }
     
-    public Command ElevatorPosCmd(double position) {
+    // public Command ElevatorPosCmd(double position) {
+    //     return this.run(
+    //         () -> {
+    //             // rotateMotorL.set(-0.25);
+    //             // feederLauncher.set(-0.25);
+    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
+    //             if(limitSwL.get() && limitSwR.get() == false){
+    //                 setElevatorHeight(position);
+    //         }}
+    //       );
+    //     }
+
+    //       /*engineerXbox.leftStick().and(*/engineerXbox.a().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE)));
+    //   /*engineerXbox.leftStick().and(*/engineerXbox.x().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE)));
+    //   /*engineerXbox.leftStick().and(*/engineerXbox.y().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE)));
+    //   /*engineerXbox.leftStick().and(*/engineerXbox.b().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE)));
+    public Command TROUGH_POSE() {
         return this.run(
             () -> {
-                // rotateMotorL.set(-0.25);
-                // feederLauncher.set(-0.25);
-                //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-                if(limitSwL.get() && limitSwR.get() == false){
-                    setElevatorHeight(position);
-            }}
-          );
+                setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE);
+            });
+        }
+    public Command REEF_LOW_POSE() {
+        return this.run(
+            () -> {
+                setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE);
+            });
+        }
+    public Command REEF_MIDDLE_POSE() {
+        return this.run(
+            () -> {
+                setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE);
+            });
+        }
+    public Command REEF_HIGH_POSE() {
+        return this.run(
+            () -> {
+                setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE);
+            });
         }
 
     @Override

@@ -21,7 +21,7 @@ import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkFlex;                                                             
 
 public class RotateSubsystem extends SubsystemBase {
 
@@ -29,10 +29,11 @@ public class RotateSubsystem extends SubsystemBase {
     private AbsoluteEncoder rotateEncoder;
     public SparkClosedLoopController  rotatePID;
     private SparkFlexSim rotateMotorSim;
-    private SparkAbsoluteEncoderSim rotateEncoderSim;
+    private SparkAbsoluteEncoderSim rotateEncoderSim;                              
     private SparkFlexConfig rotateMtrCfg;
     // private AbsoluteEncoderConfig encCfg;
-    // private SoftLimitConfig rotateMtrSftLmtCfg;
+    // private SoftLimitConfig rotateMtrSftLmtCfg;.
+    
     private double kP = 0.01, kI = 0.0, kD = 0.0;//p was 0.0005
     private double kFF = 0.0;
     private double kOutputMin = -1.0;
@@ -56,7 +57,7 @@ public class RotateSubsystem extends SubsystemBase {
             .inverted(true)
             .voltageCompensation(12.0)
             .smartCurrentLimit(40)
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
         rotateMtrCfg
             .absoluteEncoder
                 .positionConversionFactor(360)

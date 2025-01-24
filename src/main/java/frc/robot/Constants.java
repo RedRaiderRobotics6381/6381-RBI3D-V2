@@ -57,14 +57,14 @@ public final class Constants
     public static final int LEFT_ELEVATOR_MOTOR_PORT = 9;
     public static final int RIGHT_ELEVATOR_MOTOR_PORT = 13;
 
-    public static final int START_POSE = 0;
-    public static final int TROUGH_POSE = 0;
-    public static final int REEF_LOW_POSE = 4;
-    public static final int REEF_MIDDLE_POSE = 8;
-    public static final int REEF_HIGH_POSE = 0;
-    public static final int ALGAE_SCORE_POSE = 0;
-    public static final int ALGAE_PICKUP_POSE = 0;
-    public static final int HUMAN_PLAYER_POSE = 0;
+    public static final double START_POSE = 0;
+    public static final double TROUGH_POSE = 1;
+    public static final double REEF_LOW_POSE = 4;
+    public static final double REEF_MIDDLE_POSE = 6;
+    public static final double REEF_HIGH_POSE = 8;
+    public static final double ALGAE_SCORE_POSE = 0;
+    public static final double ALGAE_PICKUP_POSE = 0;
+    public static final double HUMAN_PLAYER_POSE = 0;
 
   }
 
