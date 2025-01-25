@@ -14,13 +14,11 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-// import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-// import com.revrobotics.spark.config.EncoderConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,9 +56,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         ldrCfg = new SparkFlexConfig();
         flwCfg = new SparkFlexConfig();
-        // EncoderConfig encoderConfig = new EncoderConfig();
-        // SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
-        // SoftLimitConfig followerSoftLimit = new SoftLimitConfig();
 
         elevPIDLdr = elevMtrLdr.getClosedLoopController();
         elevPIDFlw = elevMtrFlw.getClosedLoopController();
@@ -138,40 +133,27 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
     
-    // public Command ElevatorPosCmd(double position) {
-    //     return this.run(
-    //         () -> {
-    //             // rotateMotorL.set(-0.25);
-    //             // feederLauncher.set(-0.25);
-    //             //rotatePIDController.setReference(-1000, SparkMax.ControlType.kMAXMotionPositionControl);
-    //             if(limitSwL.get() && limitSwR.get() == false){
-    //                 setElevatorHeight(position);
-    //         }}
-    //       );
-    //     }
-
-    //       /*engineerXbox.leftStick().and(*/engineerXbox.a().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE)));
-    //   /*engineerXbox.leftStick().and(*/engineerXbox.x().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE)));
-    //   /*engineerXbox.leftStick().and(*/engineerXbox.y().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE)));
-    //   /*engineerXbox.leftStick().and(*/engineerXbox.b().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE)));
     public Command TROUGH_POSE() {
         return this.run(
             () -> {
                 setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE);
             });
         }
+
     public Command REEF_LOW_POSE() {
         return this.run(
             () -> {
                 setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE);
             });
         }
+
     public Command REEF_MIDDLE_POSE() {
         return this.run(
             () -> {
                 setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE);
             });
         }
+
     public Command REEF_HIGH_POSE() {
         return this.run(
             () -> {
@@ -199,6 +181,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     } else {
         SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdr.getPosition());
         SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlw.getPosition());
-    }
+       }
     }
 }

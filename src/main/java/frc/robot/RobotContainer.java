@@ -189,14 +189,20 @@ public class RobotContainer
       // engineerXbox.x().onTrue(rotateSubsystem.ForwardCmd());
       // engineerXbox.y().onTrue(rotateSubsystem.UpCmd());
       // engineerXbox.b().onTrue(rotateSubsystem.MiddleCmd());
+      
       // engineerXbox.x().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
       // engineerXbox.b().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
       // engineerXbox.y().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
-      // /*engineerXbox.leftStick().and(*/engineerXbox.a().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
-      // /*engineerXbox.leftStick().and(*/engineerXbox.x().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
-      // /*engineerXbox.leftStick().and(*/engineerXbox.y().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
-      // /*engineerXbox.leftStick().and(*/engineerXbox.b().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem));
+      // engineerXbox.leftStick().and(engineerXbox.a()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
+      // engineerXbox.leftStick().and(engineerXbox.x()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
+      // engineerXbox.leftStick().and(engineerXbox.y()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
+      // engineerXbox.leftStick().and(engineerXbox.b()).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem));
+
+      // engineerXbox.a().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
+      // engineerXbox.x().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
+      // engineerXbox.y().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem));
+      // engineerXbox.b().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem));
 
       engineerXbox.a().onTrue(elevatorSubsystem.TROUGH_POSE());
       engineerXbox.x().onTrue(elevatorSubsystem.REEF_LOW_POSE());
