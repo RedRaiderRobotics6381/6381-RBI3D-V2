@@ -14,10 +14,12 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,17 +44,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double kLdrP = 0.5, kLdrI = 0.0, kLdrD = 0.0; //start p = 0.0005
     private double kFlwP = 0.5, kFlwI = 0.0, kFlwD = 0.0;
     private double kLdrFF = 0.0005, kFlwFF = 0.0005;
-    private double kLdrOutputMin = -1.0, kFlwOutputMin = -1.0;
-    private double kLdrOutputMax = 1.0, kFlwOutputMax = 1.0;
-    private double kLdrMaxRPM = 1000, kFlwMaxRPM = 1000;
-    private double kLdrMaxAccel = 500, kFlwMaxAccel = 500;
-    // public DigitalInput limitSwL;
+    private double kLdrOutputMin = -0.5, kFlwOutputMin = -0.5;
+    private double kLdrOutputMax = 0.5, kFlwOutputMax = 0.5;
+    private double kLdrMaxRPM = 100, kFlwMaxRPM = 100;
+    private double kLdrMaxAccel = 50, kFlwMaxAccel = 50;
+    public DigitalInput limitSwL;
     // public DigitalInput limitSwR;
     
 
     public ElevatorSubsystem() {
         elevMtrLdr = new SparkFlex(Constants.ElevatorConstants.LEFT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
         elevMtrFlw = new SparkFlex(Constants.ElevatorConstants.RIGHT_ELEVATOR_MOTOR_PORT, MotorType.kBrushless);
+
+        limitSwL = new DigitalInput(0);
 
         ldrCfg = new SparkFlexConfig();
         flwCfg = new SparkFlexConfig();
@@ -64,7 +68,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevEncFlw = elevMtrFlw.getEncoder();
 
         ldrCfg
-            .inverted(false)
+            .inverted(true)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
             .idleMode(IdleMode.kBrake);
@@ -73,8 +77,12 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .positionConversionFactor(0.085240244); //confirm conversion factor
         ldrCfg
             .softLimit
-                .forwardSoftLimit(8.0) 
+                .forwardSoftLimit(16.5) 
                 .reverseSoftLimit(-1.0);
+        // ldrCfg
+        //     .limitSwitch
+        //     .reverseLimitSwitchType(Type.kNormallyClosed)
+        //     .reverseLimitSwitchEnabled(true);
         ldrCfg
             .closedLoop
                 .pidf(kLdrP, kLdrI, kLdrD, kLdrFF)
@@ -87,7 +95,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         
 
         flwCfg
-            .follow(elevMtrLdr, true)
+            .follow(elevMtrLdr, false)
             .voltageCompensation(12.0)
             .smartCurrentLimit(80)
             .idleMode(IdleMode.kBrake);
@@ -96,7 +104,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .positionConversionFactor(.085240244); //confirm conversion factor
         flwCfg
             .softLimit
-                .forwardSoftLimit(8.0) 
+                .forwardSoftLimit(16.5) 
                 .reverseSoftLimit(-1.0); // -0.05
         flwCfg
             .closedLoop
@@ -129,14 +137,56 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (Robot.isSimulation()) {
             // leaderElevatorSim.setVelocity(speed);
             // followerElevatorSim.setVelocity(speed);
+            // if (!limitSwL.get()) {
+            //     elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
+            // }
+            // else {
+            //     elevMtrLdr.set(0);
+            // }
+
             elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
         }
     }
+
+        // // An accessor method to set the speed (technically the output percentage) of the launch wheel
+        public void setElevatorVel(double vel) {
+            // leaderElevatorL.set(speed);
+            if (limitSwL.get()){
+                elevMtrLdr.set(.125);
+            }
+            else{
+                elevMtrLdr.getEncoder().setPosition(0);
+                elevEncLdr.setPosition(0);
+                elevEncFlw.setPosition(0);
+            }
+
+                // leaderElevatorSim.setVelocity(speed);
+                // followerElevatorSim.setVelocity(speed);
+                // if (!limitSwL.get()) {
+                //     elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
+                // }
+                // else {
+                //     elevMtrLdr.set(0);
+                // }
+
+        }
     
-    public Command TROUGH_POSE() {
+        public Command INIT_POSE() {
+            return this.run(
+                () -> {
+                    if (limitSwL.get()){
+                        elevMtrLdr.set(.125);
+                    }
+                    else{
+                        elevEncLdr.setPosition(0);
+                        elevEncFlw.setPosition(0);
+                    }
+                });
+            }
+        public Command START_POSE() {
         return this.run(
             () -> {
-                setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE);
+                setElevatorHeight(Constants.ElevatorConstants.START_POSE);
             });
         }
 
@@ -181,6 +231,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     } else {
         SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdr.getPosition());
         SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlw.getPosition());
+        SmartDashboard.putBoolean("Elevator Limit Switch", limitSwL.get());
        }
     }
 }

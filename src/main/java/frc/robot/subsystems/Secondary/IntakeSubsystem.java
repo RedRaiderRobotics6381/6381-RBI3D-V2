@@ -38,9 +38,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private SparkFlexConfig flwCfg;
   private SparkRelativeEncoderSim intakeEncLdrSim;
   private SparkRelativeEncoderSim intakeEncFlwSim;
-  private double kLdrP = 0.0005, kLdrI = 0.0, kLdrD = 0.0;
-  private double kFlwP = 0.0005, kFlwI = 0.0, kFlwD = 0.0;
-  private double kLdrFF = 0.0005, kFlwFF = 0.0005;
+  private double kLdrP = 0.0003, kLdrI = 0.0, kLdrD = 0.0;
+  private double kFlwP = 0.0003, kFlwI = 0.0, kFlwD = 0.0;
+  // private double kLdrFF = 0.0005, kFlwFF = 0.0005;
   private double kLdrOutputMin = -1.0, kFlwOutputMin = -1.0;
   private double kLdrOutputMax = 1.0, kFlwOutputMax = 1.0;
   private double kLdrMaxRPM = 5676, kFlwMaxRPM = 5676;
@@ -67,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .smartCurrentLimit(80)
         .idleMode(IdleMode.kBrake)
         .closedLoop
-            .pidf(kLdrP, kLdrI, kLdrD, kLdrFF)
+            .pid(kLdrP, kLdrI, kLdrD)
             .outputRange(kLdrOutputMin, kLdrOutputMax)
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .maxMotion
@@ -81,7 +81,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .smartCurrentLimit(80)
         .idleMode(IdleMode.kBrake)
         .closedLoop
-            .pidf(kFlwP, kFlwI, kFlwD, kFlwFF)
+            .pid(kFlwP, kFlwI, kFlwD)
             .outputRange(kFlwOutputMin, kFlwOutputMax)
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
             .maxMotion
@@ -126,7 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
   
 
   public void runIntake(double speed) {
-    intakeLdrPID.setReference(speed, SparkFlex.ControlType.kMAXMotionVelocityControl);
+    intakeLdrPID.setReference(speed, SparkFlex.ControlType.kVelocity);
   }
 
   public Command IntakeCmd() {
@@ -135,7 +135,6 @@ public class IntakeSubsystem extends SubsystemBase {
             runIntake(Constants.IntakeConstants.INTAKE_SPEED);
         },
         () -> {
-            runIntake(Constants.IntakeConstants.HOLD_SPEED);
             runIntake(Constants.IntakeConstants.HOLD_SPEED);
         }
       );

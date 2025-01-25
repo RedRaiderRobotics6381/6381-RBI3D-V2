@@ -159,7 +159,7 @@ public class AbsoluteDriveAdvHdg extends Command
     }
     if (angVelMode == true) // If in velocity mode and not looking at the target
     {
-      swerve.drive(translation, MathUtil.applyDeadband(-oX.getAsDouble(), OperatorConstants.RIGHT_X_DEADBAND), true); // Drive with the desired speeds
+      swerve.drive(translation, MathUtil.applyDeadband(-oX.getAsDouble() * 5, OperatorConstants.RIGHT_X_DEADBAND), true); // Drive with the desired speeds
     }
   
   }

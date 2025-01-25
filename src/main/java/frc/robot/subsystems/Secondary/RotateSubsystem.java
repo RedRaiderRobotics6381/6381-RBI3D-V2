@@ -36,10 +36,10 @@ public class RotateSubsystem extends SubsystemBase {
     
     private double kP = 0.01, kI = 0.0, kD = 0.0;//p was 0.0005
     private double kFF = 0.0;
-    // private double kOutputMin = -1.0;
-    // private double kOutputMax = 1.0;
-    private double kMaxRPM = 5676.0;
-    private double kMaxAccel = 20000.0;
+    private double kOutputMin = -0.5;
+    private double kOutputMax = 0.5;
+    // private double kMaxRPM = 5676.0;
+    // private double kMaxAccel = 20000.0;
 
     
 
@@ -64,17 +64,17 @@ public class RotateSubsystem extends SubsystemBase {
                 ;
         rotateMtrCfg
             .softLimit
-                .forwardSoftLimit(180.0) 
+                .forwardSoftLimit(160.0) 
                 .reverseSoftLimit(290.0);
         rotateMtrCfg
             .closedLoop
                 .pidf(kP, kI, kD, kFF)
-                //.outputRange(kOutputMin, kOutputMax)
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .maxMotion
-                    .maxAcceleration(kMaxAccel)
-                    .maxVelocity(kMaxRPM)
-                    .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
+                .outputRange(kOutputMin, kOutputMax)
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+                // .maxMotion
+                //     .maxAcceleration(kMaxAccel)
+                //     .maxVelocity(kMaxRPM)
+                //     .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
         rotateMotor.configure(rotateMtrCfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
@@ -109,24 +109,37 @@ public class RotateSubsystem extends SubsystemBase {
     public Command ForwardCmd() {
     return this.run(
         () -> {
-            setArm(Constants.ArmConstants.ARM_OUT_POSE);
+            setArm(Constants.ArmConstants.CORAL_INTAKE_POS);
         });
     }
 
     public Command MiddleCmd() {
     return this.run(
         () -> {
-            setArm(Constants.ArmConstants.ARM_MIDDLE_POSE);
+            setArm(Constants.ArmConstants.CORAL_MID_POS);
         });
     }
 
     public Command UpCmd() {
       return this.run(
           () -> {
-              setArm(Constants.ArmConstants.ARM_UP_POSE);
+              setArm(Constants.ArmConstants.CORAL_HIGH_POS);
           });
       }
-    
+
+    public Command AlgaeIntakeCmd () {
+        return this.run(
+            () -> {
+                setArm(Constants.ArmConstants.ALGAE_INTAKE_POS);
+            }); 
+    }
+
+    public Command AlgaeStartCmd () {
+        return this.run(
+            () -> {
+                setArm(Constants.ArmConstants.ALGAE_START_POS);
+            });
+    }    
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
