@@ -14,7 +14,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+// import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
@@ -29,12 +29,12 @@ import frc.robot.Robot;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    private SparkFlex elevMtrLdr;
-    private SparkFlex elevMtrFlw;
+    public SparkFlex elevMtrLdr;
+    public SparkFlex elevMtrFlw;
     private SparkFlexConfig ldrCfg;
     private SparkFlexConfig flwCfg;
-    private RelativeEncoder elevEncLdr;
-    private RelativeEncoder elevEncFlw;
+    public RelativeEncoder elevEncLdr;
+    public RelativeEncoder elevEncFlw;
     public SparkClosedLoopController  elevPIDLdr;
     public SparkClosedLoopController  elevPIDFlw;
     private SparkFlexSim elevMtrLdrSim;
@@ -148,47 +148,26 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
-        // // An accessor method to set the speed (technically the output percentage) of the launch wheel
-        public void setElevatorVel(double vel) {
-            // leaderElevatorL.set(speed);
-            if (limitSwL.get()){
-                elevMtrLdr.set(.125);
-            }
-            else{
-                elevMtrLdr.getEncoder().setPosition(0);
-                elevEncLdr.setPosition(0);
-                elevEncFlw.setPosition(0);
-            }
+    public Command INIT_POSE() {
+        return this.run(
+            () -> {
+                if (!limitSwL.get()){
+                    elevMtrLdr.set(.125);
+                }
+                else{
+                    elevMtrLdr.set(0);
+                    elevEncLdr.setPosition(0);
+                    elevEncFlw.setPosition(0);
+                }
+            });
+    }
 
-                // leaderElevatorSim.setVelocity(speed);
-                // followerElevatorSim.setVelocity(speed);
-                // if (!limitSwL.get()) {
-                //     elevPIDLdr.setReference(pos, SparkMax.ControlType.kPosition);
-                // }
-                // else {
-                //     elevMtrLdr.set(0);
-                // }
-
-        }
-    
-        public Command INIT_POSE() {
-            return this.run(
-                () -> {
-                    if (limitSwL.get()){
-                        elevMtrLdr.set(.125);
-                    }
-                    else{
-                        elevEncLdr.setPosition(0);
-                        elevEncFlw.setPosition(0);
-                    }
-                });
-            }
-        public Command START_POSE() {
+    public Command START_POSE() {
         return this.run(
             () -> {
                 setElevatorHeight(Constants.ElevatorConstants.START_POSE);
             });
-        }
+    }
 
     public Command REEF_LOW_POSE() {
         return this.run(
