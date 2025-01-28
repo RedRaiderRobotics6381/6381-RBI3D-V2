@@ -132,10 +132,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command IntakeCmd() {
     return this.runEnd(
         () -> {
-            runIntake(Constants.IntakeConstants.INTAKE_SPEED);
+            // runIntake(Constants.IntakeConstants.INTAKE_SPEED);
+            intakeMtrLdr.set(0.15);
         },
         () -> {
-            runIntake(Constants.IntakeConstants.HOLD_SPEED);
+            // runIntake(Constants.IntakeConstants.HOLD_SPEED);
+            intakeMtrLdr.set(0.1);
         }
       );
   }
@@ -143,10 +145,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command OuttakeCmd() {
     return this.runEnd(
         () -> {
-            runIntake(Constants.IntakeConstants.OUTTAKE_SPEED);
+            // runIntake(Constants.IntakeConstants.OUTTAKE_SPEED);
+            intakeMtrLdr.set(-0.15);
         },
         () -> {
-            runIntake(Constants.IntakeConstants.STOP_SPEED);
+            // runIntake(Constants.IntakeConstants.STOP_SPEED);
+            intakeMtrLdr.set(0);
         }
       );
   }

@@ -34,7 +34,7 @@ public void initialize() {
 @Override
 public void execute() {
   if(!elevatorSubsystem.limitSwL.get()){
-    elevatorSubsystem.elevMtrLdr.set(.125);
+    elevatorSubsystem.elevMtrLdr.set(-.125);
     //I think this can just be an else statement
   } else if(elevatorSubsystem.limitSwL.get()) {
     elevatorSubsystem.elevMtrLdr.set(0);

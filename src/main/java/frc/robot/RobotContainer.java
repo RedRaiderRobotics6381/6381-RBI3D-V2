@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 // import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -29,6 +30,8 @@ import frc.robot.subsystems.Secondary.RotateSubsystem;
 // import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 // import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvAim;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
+
 import java.io.File;
 // import swervelib.SwerveInputStream;
 
@@ -49,7 +52,7 @@ public class RobotContainer
 
   private final RotateSubsystem rotateSubsystem = new RotateSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();                                                                              
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();                                                                             
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -176,6 +179,11 @@ public class RobotContainer
     {
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
+      driverXbox.b().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
+                          Vision.getAprilTagPose(18,
+                                                        new Transform2d(1.0, 0,
+                                                        Rotation2d.fromDegrees(180))))));
+
 
 
       // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
@@ -240,6 +248,7 @@ public class RobotContainer
 
   public void setMotorBrake(boolean brake)
   {
+
     drivebase.setMotorBrake(brake);
   }
   public void initElevator(){

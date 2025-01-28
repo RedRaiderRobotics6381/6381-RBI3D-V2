@@ -44,8 +44,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double kLdrP = 0.5, kLdrI = 0.0, kLdrD = 0.0; //start p = 0.0005
     private double kFlwP = 0.5, kFlwI = 0.0, kFlwD = 0.0;
     private double kLdrFF = 0.0005, kFlwFF = 0.0005;
-    private double kLdrOutputMin = -0.5, kFlwOutputMin = -0.5;
-    private double kLdrOutputMax = 0.5, kFlwOutputMax = 0.5;
+    private double kLdrOutputMin = -1.0, kFlwOutputMin = -1.0;
+    private double kLdrOutputMax = 1.0, kFlwOutputMax = 1.0;
     private double kLdrMaxRPM = 100, kFlwMaxRPM = 100;
     private double kLdrMaxAccel = 50, kFlwMaxAccel = 50;
     public DigitalInput limitSwL;
@@ -205,11 +205,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.isSimulation()) {
-        SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdrSim.getPosition());
-        SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlwSim.getPosition());
+        // SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdrSim.getPosition());
+        // SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlwSim.getPosition());
     } else {
-        SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdr.getPosition());
-        SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlw.getPosition());
+        SmartDashboard.putNumber("Elevator Lead Position", elevEncLdr.getPosition());
+        SmartDashboard.putNumber("Elevator Follower Position", elevEncFlw.getPosition());
         SmartDashboard.putBoolean("Elevator Limit Switch", limitSwL.get());
        }
     }
