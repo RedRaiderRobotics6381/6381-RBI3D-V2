@@ -342,7 +342,7 @@ public class Vision
     /**
      * Left Camera
      */
-    LEFT_CAM("camFVLeft",
+    LEFT_CAM("Left",
              new Rotation3d(0, Math.toRadians(-25.0), Math.toRadians(30)),
              new Translation3d(Units.inchesToMeters(13.361522),
                                Units.inchesToMeters(11.654985),
@@ -351,7 +351,7 @@ public class Vision
     /**
      * Right Camera
      */
-    RIGHT_CAM("camFVRight",
+    RIGHT_CAM("Right",
               new Rotation3d(0, Math.toRadians(-25.0), Math.toRadians(-30)),
               new Translation3d(Units.inchesToMeters(13.361522),
                                 Units.inchesToMeters(-11.654985),
