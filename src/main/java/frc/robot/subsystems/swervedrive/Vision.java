@@ -347,7 +347,7 @@ public class Vision
              new Translation3d(Units.inchesToMeters(13.361522),
                                Units.inchesToMeters(11.654985),
                                Units.inchesToMeters(9.714338)),
-             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+             VecBuilder.fill(2, 2, 4), VecBuilder.fill(0.25, 0.25, 0.5)), //VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
      * Right Camera
      */
@@ -356,7 +356,7 @@ public class Vision
               new Translation3d(Units.inchesToMeters(13.361522),
                                 Units.inchesToMeters(-11.654985),
                                 Units.inchesToMeters(9.714338)),
-              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+              VecBuilder.fill(2, 2, 4), VecBuilder.fill(0.25, 0.25, 0.5)); //VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
     //  * Center Camera
     //  */
