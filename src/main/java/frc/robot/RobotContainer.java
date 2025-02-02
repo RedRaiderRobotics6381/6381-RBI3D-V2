@@ -23,6 +23,7 @@ import frc.robot.Constants.DrivebaseConstants;
 // import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Secondary.ElevatorInitCmd;
+import frc.robot.commands.Secondary.PositionIdentifierCmd;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdg;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.IntakeSubsystem;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.Secondary.RotateSubsystem;
 // import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvAim;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
+import swervelib.SwerveDrive;
 
 import java.io.File;
 // import swervelib.SwerveInputStream;
@@ -52,7 +54,7 @@ public class RobotContainer
 
   private final RotateSubsystem rotateSubsystem = new RotateSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();                                                                             
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();       
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -192,6 +194,10 @@ public class RobotContainer
       // engineerXbox.leftStick().and(engineerXbox.y()).whileTrue(intakeSubsystem.OuttakeCmd());
       engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
       engineerXbox.rightBumper().whileTrue(intakeSubsystem.OuttakeCmd());
+      engineerXbox.a().whileTrue(PositionIdentifierCmd(elevatorSubsystem,
+                                                       rotateSubsystem,
+                                                       () -> engineerXbox.getLeftX(),
+                                                       engineerXbox.leftBumper().getAsBoolean()));
 
       // engineerXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
       //                                          (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),
