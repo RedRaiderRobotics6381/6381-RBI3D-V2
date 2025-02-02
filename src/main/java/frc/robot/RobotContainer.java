@@ -73,6 +73,8 @@ public class RobotContainer
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> driverXbox.getHID().getPOV(),
                                                                     driverXbox.rightStick());
 
