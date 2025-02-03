@@ -26,6 +26,7 @@ public class AbsoluteDriveAdvHdg extends Command
   private final SwerveSubsystem swerve;
   private final DoubleSupplier  vX, vY;
   private final DoubleSupplier  oX, oY;
+  private final DoubleSupplier leftY, rightY;
   private final DoubleSupplier lookPOV;
   private final BooleanSupplier hdgMode;
 
@@ -34,6 +35,7 @@ public class AbsoluteDriveAdvHdg extends Command
   boolean angVelMode = true; // Flag to track velocity mode (default)
   boolean hdgPOV = false; // Flag to track POV mode
   boolean resetHeading = false; // Flag to track heading reset 
+
 
   /**
    * Used to drive a swerve robot in full field-centric mode.  vX and vY supply translation inputs, where x is
@@ -62,13 +64,15 @@ public class AbsoluteDriveAdvHdg extends Command
   //                         BooleanSupplier lookAway, BooleanSupplier lookTowards, BooleanSupplier lookLeft,
   //                         BooleanSupplier lookRight, BooleanSupplier lookTarget, BooleanSupplier hdgMode)
     public AbsoluteDriveAdvHdg(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier oX, DoubleSupplier oY,
-                             DoubleSupplier lookPOV, BooleanSupplier hdgMode)
+                              DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier lookPOV, BooleanSupplier hdgMode)
     {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
     this.oX = oX;
     this.oY = oY;
+    this.leftY = leftY;
+    this.rightY = rightY;
     this.lookPOV = lookPOV;
     this.hdgMode = hdgMode;
     addRequirements(swerve);
@@ -84,68 +88,80 @@ public class AbsoluteDriveAdvHdg extends Command
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
+public void execute()
+{
     double headingX = oX.getAsDouble();
     double headingY = oY.getAsDouble();
 
-    if (hdgMode.getAsBoolean() && !hdgModePressed) {
-      hdgModePressed = true; // Button pressed, set flag to true
 
-      if (angHdgMode) {
-        angVelMode = true; // Switch to velocity mode
-        angHdgMode = false; // Switch off angle mode
-      } else {
-        angHdgMode = true; // Switch to angle mode
-        angVelMode = false; // Switch off velocity mode
-        // This is to prevent the robot from spinning when switching modes
-        Rotation2d currentHeading = swerve.getHeading(); // Get current heading
-        headingX = currentHeading.getSin(); // Set headingX to sin of current heading
-        headingY = currentHeading.getCos(); // Set headingY to cos of current heading
-      }
-      //System.out.println("hdgMode: " + hdgMode.getAsBoolean() + " angHdgMode: " + angHdgMode + " angVelMode: " + angVelMode); // Debugging
+
+  // Convert joystick input to an angle
+  double angle = Math.toDegrees(Math.atan2(headingY, headingX))-270;
+
+  // Normalize to the range [0, 360)
+  angle = (angle + 360) % 360;
+
+  // Snap to the nearest 60-degree increment
+  double snappedAngle = Math.round(angle / 60.0) * 60.0;
+  if (headingX != 0 || headingY != 0) {
+    headingX = Math.sin(Math.toRadians(-snappedAngle));
+    headingY = Math.cos(Math.toRadians(-snappedAngle));
+  } else {
+    Rotation2d currentHeading = swerve.getHeading(); 
+    headingX = currentHeading.getSin();
+    headingY = currentHeading.getCos();
+  }
+  
+  // System.out.println("Snapped Angle: " + snappedAngle);
+
+  // // Check if snapped angle is one of the allowed values
+  // if (snappedAngle == 60 || snappedAngle == 120 || snappedAngle == 180 ||
+  //     snappedAngle == 240 || snappedAngle == 300 || snappedAngle == 360) {
+      
+  //     // Convert snapped angle to heading vector
+  //     double snappedAngleRadians = Math.toRadians(snappedAngle);
+  //     headingX = Math.cos(snappedAngleRadians);
+  //     headingY = Math.sin(snappedAngleRadians);
+  // } else {
+  //     Rotation2d currentHeading = swerve.getHeading();
+  //     // Negate the heading if not a valid angle
+  //     headingX = currentHeading.getSin();
+  //     headingY = currentHeading.getCos();
+  // }
+
+    if (hdgMode.getAsBoolean() && !hdgModePressed) {
+        hdgModePressed = true; // Button pressed, set flag to true
+
+        if (angHdgMode) {
+            angVelMode = true; // Switch to velocity mode
+            angHdgMode = false; // Switch off angle mode
+        } else {
+            angHdgMode = true; // Switch to angle mode
+            angVelMode = false; // Switch off velocity mode
+            // Prevent the robot from spinning when switching modes
+            Rotation2d currentHeading = swerve.getHeading();
+            headingX = currentHeading.getSin();
+            headingY = currentHeading.getCos();
+        }
     } else if (!hdgMode.getAsBoolean()) {
-      hdgModePressed = false; // Button released, reset flag
+        hdgModePressed = false; // Button released, reset flag
     }
-    
+
     // Face Away from Drivers
     if (lookPOV.getAsDouble() != -1)
     {
-      headingX = Rotation2d.fromDegrees(lookPOV.getAsDouble()).getSin(); // Set headingX to sin of current heading
-      headingY = Rotation2d.fromDegrees(lookPOV.getAsDouble()).getCos(); // Set headingY to cos of current heading
-      hdgPOV = true;
+        headingX = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getSin();
+        headingY = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getCos();
+        hdgPOV = true;
     }
 
-    // // Face Away from Drivers
-    // if (lookAway.getAsBoolean())
-    // {
-    //   headingY = -1;
-    //   hdgPOV = true;
-    // }
 
-    // // Face Right
-    // if (lookRight.getAsBoolean())
-    // {
-    //   headingX = 1;
-    //   hdgPOV = true;
-    // }
-    // // Face Left
-    // if (lookLeft.getAsBoolean())
-    // {
-    //   headingX = -1;
-    //   hdgPOV = true;
-    // }
-    // // Face Towards the Drivers
-    // if (lookTowards.getAsBoolean())
-    // {
-    //   headingY = 1;
-    //   hdgPOV = true;
-    // }
-    
-    
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingX, headingY); // Get the target speeds
 
-    // Limit velocity to prevent tippy
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingX, headingY);
+
+    Translation2d translationY = 
+    new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble());
+    // Limit velocity to prevent tipping
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
     translation = SwerveMath.limitVelocity(translation, swerve.getFieldVelocity(), swerve.getPose(),
                                           Constants.LOOP_TIME, Constants.ROBOT_MASS, List.of(Constants.CHASSIS),
@@ -153,16 +169,24 @@ public class AbsoluteDriveAdvHdg extends Command
     SmartDashboard.putNumber("LimitedTranslation", translation.getX());
     SmartDashboard.putString("Translation", translation.toString());
 
-    if (angHdgMode == true) // If in angle mode or looking at the target
+    if (angHdgMode)
     {
-      swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true); // Drive with the desired speeds
+      if (translationY.getY() != 0) {
+        swerve.drive(translationY, 0, false);
+      } else {
+        swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
+      }
     }
-    if (angVelMode == true) // If in velocity mode and not looking at the target
+    if (angVelMode)
     {
-      swerve.drive(translation, MathUtil.applyDeadband(-oX.getAsDouble() * 5, OperatorConstants.RIGHT_X_DEADBAND), true); // Drive with the desired speeds
+      if (translationY.getY() != 0) {
+        swerve.drive(translationY, 0, false);
+      } else {
+        swerve.drive(translation, MathUtil.applyDeadband(-oX.getAsDouble() * 5, OperatorConstants.RIGHT_X_DEADBAND), true);
+      }
     }
-  
-  }
+}
+
 
   // Called once the command ends or is interrupted.
   @Override

@@ -23,6 +23,8 @@ import frc.robot.Constants.DrivebaseConstants;
 // import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Secondary.ElevatorInitCmd;
+import frc.robot.commands.Secondary.PositionIdentifierCmd;
+import frc.robot.commands.Secondary.PositionIdentifierCmdJK;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdg;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.IntakeSubsystem;
@@ -31,6 +33,7 @@ import frc.robot.subsystems.Secondary.RotateSubsystem;
 // import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvAim;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
+import swervelib.SwerveDrive;
 
 import java.io.File;
 // import swervelib.SwerveInputStream;
@@ -52,7 +55,7 @@ public class RobotContainer
 
   private final RotateSubsystem rotateSubsystem = new RotateSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();                                                                             
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();       
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -73,6 +76,8 @@ public class RobotContainer
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> driverXbox.getHID().getPOV(),
                                                                     driverXbox.rightStick());
 
@@ -191,6 +196,17 @@ public class RobotContainer
       engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
       engineerXbox.rightBumper().whileTrue(intakeSubsystem.OuttakeCmd());
 
+      // engineerXbox.a().whileTrue(new PositionIdentifierCmd(elevatorSubsystem,
+      //                                                  rotateSubsystem,
+      //                                                  () -> engineerXbox.getLeftX(),
+      //                                                  engineerXbox.leftBumper()));
+
+      engineerXbox.a().whileTrue(new PositionIdentifierCmdJK(elevatorSubsystem,
+                                                            rotateSubsystem, 
+                                                            () -> engineerXbox.getLeftX(),
+                                                            () -> engineerXbox.getLeftY(),
+                                                            engineerXbox.leftBumper()));
+
       // engineerXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
       //                                          (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),
       //                                                 intakeSubsystem));
@@ -210,14 +226,14 @@ public class RobotContainer
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.x())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_INTAKE_POS), rotateSubsystem)); //Rotate arm to 190 degrees CORAL_INTAKE_POS
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.y())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem)); //Rotate arm to 165 degrees CORAL_HIGH_POS
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.b())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_MID_POS), rotateSubsystem)); //Rotate arm to 175 degrees CORAL_MID_POS
-      engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.a())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem)); //Rotate arm to 240 degrees ALGAE_INTAKE_POS
+      // engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.a())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem)); //Rotate arm to 240 degrees ALGAE_INTAKE_POS
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.pov(90))).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_START_POS), rotateSubsystem)); //Rotate arm to 280 degrees ALGAE_START_POS
 
       // engineerXbox.x().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
       // engineerXbox.b().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
       // engineerXbox.y().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
-      engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
+      // engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.x())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem)); //Set elevator to 4
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.y())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem)); //Set elevator to 6
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.b())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem)); //Set elevator to 14.75
