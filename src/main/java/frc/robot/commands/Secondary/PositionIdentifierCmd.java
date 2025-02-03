@@ -48,35 +48,54 @@ double identifier = leftStick.getAsDouble();
 double pose = 0;
 double rotatePose = 0;
 
-  
-if (identifier > 0.33 && leftBumper.getAsBoolean()){
+//Indetifier is the joystick value, 1 is up, -1 is down, 0 is middle
+
+if (identifier > 0.33 && leftBumper.getAsBoolean()) { //if the left bumper is pressed and the joystick is pushed up
     pose = Constants.ElevatorConstants.ALGAE_PICKUP_HIGH_POSE;
     rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
-  }
-
-else if (identifier < 0.33 && identifier > 0.33 && leftBumper.getAsBoolean()){
+// } else if (identifier <= 0.33 && identifier > -0.33 && leftBumper.getAsBoolean()) { //if the left bumper is pressed and the joystick is in the middle
+} else if (leftBumper.getAsBoolean()) {
     pose = Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE;
     rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
-  }  
-
-// else if (identifier < -0.33 && leftBumper.getAsBoolean()){
-//     pose = Constants.ElevatorConstants.TROUGH_POSE;
-//   }
-
-else if (identifier > 0.33){
+} else if (identifier > 0.33) { //if the joystick is pushed up
     pose = Constants.ElevatorConstants.REEF_HIGH_POSE;
     rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
-  }
-
-else if (identifier < 0.33 && identifier > -0.33){
+} else if (Math.abs(identifier) <=.1) { //if the joystick is in the middle
     pose = Constants.ElevatorConstants.REEF_MIDDLE_POSE;
     rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
-  }
-  
-else if (identifier < -0.33){
+} else if (identifier < -0.33) { //if the joystick is pushed down
     pose = Constants.ElevatorConstants.REEF_LOW_POSE;
     rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
-  }
+}
+  
+// if (identifier > 0.33 && leftBumper.getAsBoolean()){ //if the left bumper is pressed and the joystick is pushed up
+//     pose = Constants.ElevatorConstants.ALGAE_PICKUP_HIGH_POSE;
+//     rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
+//   }
+
+// else if (identifier < 0.33 && identifier > 0.33 && leftBumper.getAsBoolean()){ //if the left bumper is pressed and the joystick is in the middle
+//     pose = Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE;
+//     rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
+//   }  
+
+// // else if (identifier < -0.33 && leftBumper.getAsBoolean()){
+// //     pose = Constants.ElevatorConstants.TROUGH_POSE;
+// //   }
+
+// else if (identifier > 0.33){ //if the joystick is pushed up
+//     pose = Constants.ElevatorConstants.REEF_HIGH_POSE;
+//     rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
+//   }
+
+// else if (identifier < 0.33 && identifier > -0.33){ //if the joystick is in the middle
+//     pose = Constants.ElevatorConstants.REEF_MIDDLE_POSE;
+//     rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
+//   }
+  
+// else if (identifier < -0.33){ //if the joystick is pushed down
+//     pose = Constants.ElevatorConstants.REEF_LOW_POSE;
+//     rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
+//   }
 
 elevatorSubsystem.setElevatorHeight(pose);
 rotateSubsystem.setArm(rotatePose);
