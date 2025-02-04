@@ -37,6 +37,8 @@ import swervelib.SwerveDrive;
 
 import java.io.File;
 // import swervelib.SwerveInputStream;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -201,11 +203,15 @@ public class RobotContainer
       //                                                  () -> engineerXbox.getLeftX(),
       //                                                  engineerXbox.leftBumper()));
 
-      engineerXbox.a().whileTrue(new PositionIdentifierCmdJK(elevatorSubsystem,
+      engineerXbox.leftStick().whileTrue(new PositionIdentifierCmdJK(elevatorSubsystem,
                                                             rotateSubsystem, 
                                                             () -> engineerXbox.getLeftX(),
                                                             () -> engineerXbox.getLeftY(),
                                                             engineerXbox.leftBumper()));
+
+    
+
+
 
       // engineerXbox.y().whileTrue(Commands.runEnd((() -> intakeSubsystem.runIntake(Constants.IntakeConstants.OUTTAKE_SPEED)),
       //                                          (() -> intakeSubsystem.runIntake(Constants.IntakeConstants.STOP_SPEED)),
@@ -226,17 +232,17 @@ public class RobotContainer
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.x())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_INTAKE_POS), rotateSubsystem)); //Rotate arm to 190 degrees CORAL_INTAKE_POS
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.y())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem)); //Rotate arm to 165 degrees CORAL_HIGH_POS
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.b())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_MID_POS), rotateSubsystem)); //Rotate arm to 175 degrees CORAL_MID_POS
-      // engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.a())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem)); //Rotate arm to 240 degrees ALGAE_INTAKE_POS
+      engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.a())).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem)); //Rotate arm to 240 degrees ALGAE_INTAKE_POS
       engineerXbox.rightStick().negate().and(engineerXbox.leftStick().negate().and(engineerXbox.pov(90))).onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_START_POS), rotateSubsystem)); //Rotate arm to 280 degrees ALGAE_START_POS
 
       // engineerXbox.x().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_OUT_POSE), rotateSubsystem));
       // engineerXbox.b().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
       // engineerXbox.y().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
-      // engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
-      engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.x())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem)); //Set elevator to 4
-      engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.y())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem)); //Set elevator to 6
-      engineerXbox.rightStick().negate().and(engineerXbox.leftStick().and(engineerXbox.b())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem)); //Set elevator to 14.75
+      engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
+      engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.x())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem)); //Set elevator to 4
+      engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.y())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem)); //Set elevator to 6
+      engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.b())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem)); //Set elevator to 14.75
 
       // engineerXbox.a().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.TROUGH_POSE), elevatorSubsystem));
       // engineerXbox.x().onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem));
@@ -296,4 +302,87 @@ public class RobotContainer
     }
     
   }
+
+//   public void PositionIdentifier() {
+
+//     // private final ElevatorSubsystem elevatorSubsystem;
+//     // private final RotateSubsystem rotateSubsystem;
+//     Double  oX, oY;
+//     Boolean algeaBol = engineerXbox.leftBumper().getAsBoolean();
+
+//     /**
+//      * Command to set the position of the elevator and rotate subsystems based on inputs from multiple buttons and a stick.
+//      *
+//      * @param elevatorSubsystem The subsystem responsible for controlling the elevator mechanism.
+//      * @param rotateSubsystem The subsystem responsible for controlling the rotation mechanism.
+//      * @param oX A DoubleSupplier providing the X coordinate of the input stick which will be rounded to 45 degree increments.
+//      * @param oY A DoubleSupplier providing the Y coordinate of the input stick which will be rounded to 45 degree increments.
+//      * @param algeaBol A BooleanSupplier indicating whether the button calling to pick up algea is pressed
+//      */
+//     /**
+//      * Executes the command to set the elevator and arm positions based on joystick input.
+//      * 
+//      * The method reads the joystick X and Y axis values to determine the input angle.
+//      * If the joystick is pushed, the input angle is snapped to the nearest 45-degree increment.
+//      * Based on the snapped input angle and the state of the algeaBol button, the method sets the 
+//      * elevator and arm positions to predefined constants.
+//      * 
+//      * The possible positions are:
+//      * - ALGAE_PICKUP_HIGH_POSE and ALGAE_INTAKE_POS if the joystick is pushed up and algeaBol is true.
+//      * - ALGAE_PICKUP_LOW_POSE and ALGAE_INTAKE_POS if the joystick is in the middle and algeaBol is true.
+//      * - REEF_HIGH_POSE and CORAL_HIGH_POS if the joystick is pushed up.
+//      * - REEF_MIDDLE_POSE and CORAL_HIGH_POS if the joystick is in the middle.
+//      * - REEF_LOW_POSE and CORAL_HIGH_POS if the joystick is pushed down.
+//      * 
+//      * Finally, the method sets the elevator height and arm position using the calculated pose values.
+//      */
+
+//     // double identifier = oX.getAsDouble(); //    double identifier = leftStick.getAsDouble();
+//     double pose = 0; // initialize the pose variable
+//     double rotatePose = 0; // initialize the rotatePose variable
+//     boolean inputAngleBol = false; // flag to track if the joystick is pushed
+//     double snappedInputAngle = 0; // initialize snappedInputAngle variable
+//     double oXRaw = engineerXbox.getLeftX(); // get the joystick X axis values
+//     double oYRaw = engineerXbox.getLeftY(); // get the joystick Y axis values
+
+//     if (Math.abs(oXRaw) > 0.1 || Math.abs(oYRaw) > 0.1) {
+//         //if(Math.sqrt(Math.Pow(oxRaw,2) + Math.Pow(oYRaw, 2)) > 0.1)
+//         inputAngleBol = true; // if the joystick is pushed
+//         double inputAngle = Math.toDegrees(Math.atan2(oYRaw, oXRaw)) - 270; // -270 to make 0 degrees straight up
+//         inputAngle = (inputAngle + 360) % 360; // 360 degrees in a circle
+//         snappedInputAngle = Math.round(inputAngle / 45) * 45.0; // 45 degree increments
+//         snappedInputAngle = (snappedInputAngle + 360) % 360; // normalize to 0-360
+//         // System.out.println("Snapped Angle: " + snappedInputAngle + " oXRaw " + oXRaw + " oYRaw " + oYRaw);
+//     }
+//     System.out.println("Snapped Angle: " + snappedInputAngle);
+//     //Indetifier is the joystick value, 1 is up, -1 is down, 0 is middle
+
+//     if (inputAngleBol && snappedInputAngle == 0.0 && algeaBol) { //if the left bumper is pressed and the joystick is pushed up
+//         Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem).andThen(
+//                      () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.ALGAE_PICKUP_HIGH_POSE), elevatorSubsystem);
+        
+//     // } else if (identifier <= 0.33 && identifier > -0.33 && leftBumper.getAsBoolean()) { //if the left bumper is pressed and the joystick is in the middle
+//     } else if (!inputAngleBol && algeaBol) {
+//         Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem).andThen(
+//                      () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE), elevatorSubsystem);
+        
+//     } else if (inputAngleBol && snappedInputAngle == 0.0) { //if the joystick is pushed up
+//         Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem).andThen(
+//                      () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem);
+//     } else if (!inputAngleBol) { //if the joystick is in the middle
+//         Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem).andThen(
+//                      () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem);
+//     } else if (inputAngleBol && snappedInputAngle == 180.0) { //if the joystick is pushed down
+//         Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem).andThen(
+//           () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem);
+
+        
+//     }
+//     //Commands.run(() -> rotateSubsystem.setArm(rotatePose), rotateSubsystem); //Rotate arm to 190 degrees CORAL_INTAKE_POS
+
+//     elevatorSubsystem.setElevatorHeight(pose);
+//     rotateSubsystem.setArm(rotatePose);
+
+// }
+
 }

@@ -90,7 +90,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .maxMotion
                     .maxAcceleration(kLdrMaxAccel)
-                    .maxVelocity(kLdrMaxRPM);
+                    .maxVelocity(kLdrMaxRPM)
+                    .allowedClosedLoopError(0.125);
         elevMtrLdr.configure(ldrCfg,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
 
@@ -113,7 +114,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .maxMotion
                     .maxAcceleration(kFlwMaxAccel)
-                    .maxVelocity(kFlwMaxRPM);
+                    .maxVelocity(kFlwMaxRPM)
+                    .allowedClosedLoopError(0.125);
         elevMtrFlw.configure(flwCfg,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Add motors to the simulation

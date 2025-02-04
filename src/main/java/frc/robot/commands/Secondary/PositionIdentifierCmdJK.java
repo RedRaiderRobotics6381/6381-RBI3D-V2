@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.RotateSubsystem;
 
@@ -17,7 +18,8 @@ public class PositionIdentifierCmdJK extends Command {
     private final RotateSubsystem rotateSubsystem;
     private final DoubleSupplier  oX, oY;
     private final BooleanSupplier algeaBol;
-
+    private double pose; // initialize the pose variable
+    private double rotatePose; // initialize the rotatePose variable
     /**
      * Command to set the position of the elevator and rotate subsystems based on inputs from multiple buttons and a stick.
      *
@@ -65,40 +67,57 @@ public class PositionIdentifierCmdJK extends Command {
     @Override
     public void execute() {
     // double identifier = oX.getAsDouble(); //    double identifier = leftStick.getAsDouble();
-    double pose = 0; // initialize the pose variable
-    double rotatePose = 0; // initialize the rotatePose variable
-    boolean inputAngleBol = false; // flag to track if the joystick is pushed
-    double snappedInputAngle = 0; // initialize snappedInputAngle variable
-    double oXRaw = oX.getAsDouble(); // get the joystick X axis values
-    double oYRaw = oY.getAsDouble(); // get the joystick Y axis values
 
-    if (Math.abs(oXRaw) > 0.1 || Math.abs(oYRaw) > 0.1) {
-        inputAngleBol = true; // if the joystick is pushed
-        double inputAngle = Math.toDegrees(Math.atan2(oYRaw, oXRaw)) - 270; // -270 to make 0 degrees straight up
-        inputAngle = (inputAngle + 360) % 360; // 360 degrees in a circle
-        snappedInputAngle = Math.round(inputAngle / 45) * 45.0; // 45 degree increments
-        snappedInputAngle = (snappedInputAngle + 360) % 360; // normalize to 0-360
-        // System.out.println("Snapped Angle: " + snappedInputAngle + " oXRaw " + oXRaw + " oYRaw " + oYRaw);
-    }
-    System.out.println("Snapped Angle: " + snappedInputAngle);
-    //Indetifier is the joystick value, 1 is up, -1 is down, 0 is middle
-
-    if (inputAngleBol && snappedInputAngle == 0.0 && algeaBol.getAsBoolean()) { //if the left bumper is pressed and the joystick is pushed up
-        pose = Constants.ElevatorConstants.ALGAE_PICKUP_HIGH_POSE;
+        boolean inputAngleBol = false; // flag to track if the joystick is pushed
+        double snappedInputAngle = 0; // initialize snappedInputAngle variable
+        double oXRaw = oX.getAsDouble(); // get the joystick X axis values
+        double oYRaw = oY.getAsDouble(); // get the joystick Y axis values
+    
+        if (Math.abs(oXRaw) > 0.1 || Math.abs(oYRaw) > 0.1) {
+            //if(Math.sqrt(Math.Pow(oxRaw,2) + Math.Pow(oYRaw, 2)) > 0.1)
+            inputAngleBol = true; // if the joystick is pushed
+            double inputAngle = Math.toDegrees(Math.atan2(oYRaw, oXRaw)) - 270; // -270 to make 0 degrees straight up
+            inputAngle = (inputAngle + 360) % 360; // 360 degrees in a circle
+            snappedInputAngle = Math.round(inputAngle / 45) * 45.0; // 45 degree increments
+            snappedInputAngle = (snappedInputAngle + 360) % 360; // normalize to 0-360
+            // System.out.println("Snapped Angle: " + snappedInputAngle + " oXRaw " + oXRaw + " oYRaw " + oYRaw);
+        }
+        // System.out.println("Snapped Angle: " + snappedInputAngle);
+        //Indetifier is the joystick value, 1 is up, -1 is down, 0 is middle
+    
+        if (inputAngleBol && snappedInputAngle == 0.0 && algeaBol.getAsBoolean()) { //if the left bumper is pressed and the joystick is pushed up
+                    // Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem).andThen(
+                    //      () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.ALGAE_PICKUP_HIGH_POSE), elevatorSubsystem);
+                    //       System.out.println("a");
+            pose = Constants.ElevatorConstants.ALGAE_PICKUP_HIGH_POSE;
         rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
     // } else if (identifier <= 0.33 && identifier > -0.33 && leftBumper.getAsBoolean()) { //if the left bumper is pressed and the joystick is in the middle
     } else if (!inputAngleBol && algeaBol.getAsBoolean()) {
+        // Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ALGAE_INTAKE_POS), rotateSubsystem).andThen(
+        //     () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE), elevatorSubsystem);
+        //     System.out.println("B");
         pose = Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE;
         rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
     } else if (inputAngleBol && snappedInputAngle == 0.0) { //if the joystick is pushed up
         pose = Constants.ElevatorConstants.REEF_HIGH_POSE;
+        
+        
         rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
+        // Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem).andThen(
+        //     () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem);
+        //     System.out.println("C");
     } else if (!inputAngleBol) { //if the joystick is in the middle
+        // Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem).andThen(
+        //              () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem);
+        //              System.out.println("d");
         pose = Constants.ElevatorConstants.REEF_MIDDLE_POSE;
-        rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
+        rotatePose = Constants.ArmConstants.CORAL_MID_POS;
     } else if (inputAngleBol && snappedInputAngle == 180.0) { //if the joystick is pushed down
+        // Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.CORAL_HIGH_POS), rotateSubsystem).andThen(
+        //     () -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem);
+        //     System.out.println("e");
         pose = Constants.ElevatorConstants.REEF_LOW_POSE;
-        rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
+        rotatePose = Constants.ArmConstants.CORAL_MID_POS;
     }
     
     // if (identifier > 0.33 && leftBumper.getAsBoolean()){ //if the left bumper is pressed and the joystick is pushed up
@@ -131,7 +150,11 @@ public class PositionIdentifierCmdJK extends Command {
     //   }
 
     elevatorSubsystem.setElevatorHeight(pose);
-    rotateSubsystem.setArm(rotatePose);
+    if(Math.abs(pose - elevatorSubsystem.elevEncLdr.getPosition()) <= 0.125){
+        rotateSubsystem.setArm(rotatePose);
+    }
+    // Commands.run(() -> elevatorSubsystem.setElevatorHeight(pose)).andThen(
+    //     () -> rotateSubsystem.setArm(rotatePose));
 }
 
 

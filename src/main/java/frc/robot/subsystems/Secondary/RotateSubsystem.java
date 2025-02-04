@@ -13,7 +13,7 @@ import frc.robot.Robot;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-// import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -34,10 +34,10 @@ public class RotateSubsystem extends SubsystemBase {
     // private AbsoluteEncoderConfig encCfg;
     // private SoftLimitConfig rotateMtrSftLmtCfg;.
     
-    private double kP = 0.01, kI = 0.0, kD = 0.0;//p was 0.0005
+    private double kP = 0.005, kI = 0.0, kD = 0.0;//p was 0.0005
     private double kFF = 0.0;
-    private double kOutputMin = -0.5;
-    private double kOutputMax = 0.5;
+    private double kOutputMin = -0.3;
+    private double kOutputMax = 0.3;
     // private double kMaxRPM = 5676.0;
     // private double kMaxAccel = 20000.0;
 
@@ -64,14 +64,15 @@ public class RotateSubsystem extends SubsystemBase {
                 ;
         rotateMtrCfg
             .softLimit
-                .forwardSoftLimit(160.0) 
+                .forwardSoftLimit(150.0) 
                 .reverseSoftLimit(290.0);
         rotateMtrCfg
             .closedLoop
                 .pidf(kP, kI, kD, kFF)
                 .outputRange(kOutputMin, kOutputMax)
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-                // .maxMotion
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .maxMotion
+                    .allowedClosedLoopError(2.0);   
                 //     .maxAcceleration(kMaxAccel)
                 //     .maxVelocity(kMaxRPM)
                 //     .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);

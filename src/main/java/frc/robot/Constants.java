@@ -59,9 +59,9 @@ public final class Constants
 
     public static final double START_POSE = 0;
     public static final double TROUGH_POSE = 1;
-    public static final double REEF_LOW_POSE = 4;
-    public static final double REEF_MIDDLE_POSE = 6;
-    public static final double REEF_HIGH_POSE = 14.75;
+    public static final double REEF_LOW_POSE = 0.5;
+    public static final double REEF_MIDDLE_POSE = 6.125;
+    public static final double REEF_HIGH_POSE = 14.9; //14.75
     public static final double ALGAE_SCORE_POSE = 0;
     public static final double ALGAE_PICKUP_HIGH_POSE = 0;
     public static final double ALGAE_PICKUP_LOW_POSE = 0;
@@ -72,8 +72,8 @@ public final class Constants
   public static class ArmConstants {
     public static final int ARM_MOTOR_PORT = 12;
     public static final int CORAL_INTAKE_POS = 190;
-    public static final int CORAL_MID_POS = 175;
-    public static final int CORAL_HIGH_POS = 165;
+    public static final int CORAL_MID_POS = 165;
+    public static final int CORAL_HIGH_POS = 150;
     public static final int ALGAE_INTAKE_POS = 240;
     public static final int ALGAE_START_POS = 280;
   }
