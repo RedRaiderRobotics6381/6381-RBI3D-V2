@@ -142,6 +142,22 @@ public class IntakeSubsystem extends SubsystemBase {
       );
   }
 
+  public Command RunIntakeCmd() {
+    return this.run(
+        () -> {
+            // runIntake(Constants.IntakeConstants.INTAKE_SPEED);
+            intakeMtrLdr.set(0.15);}
+      );
+  }
+
+  public Command HoldIntakeCmd() {
+    return this.run(
+        () -> {
+            // runIntake(Constants.IntakeConstants.INTAKE_SPEED);
+            intakeMtrLdr.set(0.1);}
+      );
+  }
+
   public Command OuttakeCmd() {
     return this.runEnd(
         () -> {
