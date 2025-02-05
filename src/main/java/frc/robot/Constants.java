@@ -63,7 +63,7 @@ public final class Constants
     public static final double REEF_MIDDLE_POSE = 6.125;
     public static final double REEF_HIGH_POSE = 14.9; //14.75
     public static final double ALGAE_SCORE_POSE = 0;
-    public static final double ALGAE_PICKUP_HIGH_POSE = 0;
+    public static final double ALGAE_PICKUP_HIGH_POSE = 6.125;
     public static final double ALGAE_PICKUP_LOW_POSE = 0;
     public static final double HUMAN_PLAYER_POSE = 0;
 

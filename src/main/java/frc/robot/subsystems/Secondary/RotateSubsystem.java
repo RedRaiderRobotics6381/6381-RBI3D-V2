@@ -4,6 +4,7 @@
 package frc.robot.subsystems.Secondary;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,7 +27,7 @@ import com.revrobotics.spark.SparkFlex;
 public class RotateSubsystem extends SubsystemBase {
 
     private SparkFlex rotateMotor;
-    private AbsoluteEncoder rotateEncoder;
+    public AbsoluteEncoder rotateEncoder;
     public SparkClosedLoopController  rotatePID;
     private SparkFlexSim rotateMotorSim;
     private SparkAbsoluteEncoderSim rotateEncoderSim;                              
@@ -106,7 +107,11 @@ public class RotateSubsystem extends SubsystemBase {
 
 
     }
-    
+
+    public FunctionalCommand RotatePosCmd(double pos) {
+        return new FunctionalCommand(() -> {}, () -> setArm(pos), interrupted -> {}, () -> Math.abs(pos - rotateEncoder.getPosition()) <= 2.0, this);
+    }
+
     public Command ForwardCmd() {
     return this.run(
         () -> {
