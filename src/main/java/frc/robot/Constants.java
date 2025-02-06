@@ -88,12 +88,30 @@ public final class Constants
   // }
 
   public static class IntakeConstants {
-    public static final int LEFT_INTAKE_MOTOR_PORT = 10;
-    public static final int RIGHT_INTAKE_MOTOR_PORT = 11;
+    public static int LEFT_INTAKE_MOTOR_PORT = 10;
+    public static int RIGHT_INTAKE_MOTOR_PORT = 11;
 
-    public static final double INTAKE_SPEED = 600;
-    public static final double OUTTAKE_SPEED = -500;
-    public static final double STOP_SPEED = 0;
-    public static final double HOLD_SPEED = 200;
+    public static double INTAKE_SPEED = 600;
+    public static double OUTTAKE_SPEED = -500;
+    public static double STOP_SPEED = 0;
+    public static double HOLD_SPEED = 200;
+  }
+
+  public static class AprilTagConstants {
+    public static int HumanPlayerLeft = 0; // 1 red, 13 blue
+    public static int HumanPlayerRight = 0; // 2 red, 12 blue
+    public static int Processor = 0; // 3 red, 11 blue
+    public static int BargeFront = 0; // 5, 14 both blue and red are on the same side of the field
+    public static int BargeBack = 0; // 15, 4 both blue and red are on the same side of the field
+    public static int Reef0 = 0; // 7 red, 18 Blue
+    public static int Reef60 = 0; // 8 red, 17 Blue
+    public static int Reef120 = 0; // 9 red, 22 Blue
+    public static int Reef180 = 0; // 10 red, 21 Blue
+    public static int Reef240 = 0; // 11 red, 20 Blue
+    public static int Reef300 = 0; // 6 red, 19
+
+    public static double SnappedHdg = -1.0; // Variable to store snapped heading
+    public static int ReefTagID = 0; // Variable to store snapped angle
+
   }
 }

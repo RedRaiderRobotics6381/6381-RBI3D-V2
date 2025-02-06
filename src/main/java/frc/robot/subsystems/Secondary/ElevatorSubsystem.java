@@ -212,11 +212,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.isSimulation()) {
-        // SmartDashboard.putNumber("Elevator Lead Speed (RPM)", elevEncLdrSim.getPosition());
+        SmartDashboard.putNumber("Elevator Position", elevEncLdrSim.getPosition());
         // SmartDashboard.putNumber("Elevator Follower Speed (RPM)", elevEncFlwSim.getPosition());
     } else {
-        SmartDashboard.putNumber("Elevator Lead Position", elevEncLdr.getPosition());
-        SmartDashboard.putNumber("Elevator Follower Position", elevEncFlw.getPosition());
+        SmartDashboard.putNumber("Elevator Position", elevEncLdr.getPosition());
+        // SmartDashboard.putNumber("Elevator Follower Position", elevEncFlw.getPosition());
         SmartDashboard.putBoolean("Elevator Limit Switch", limitSwL.get());
        }
     }

@@ -24,9 +24,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
 import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -290,15 +287,15 @@ public class Vision
   {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
     {
-     try
-     {
-       Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
-       Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
-      //  Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
-     } catch (IOException | URISyntaxException e)
-     {
-       e.printStackTrace();
-     }
+//      try
+//      {
+//        Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
+//        Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
+//        Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
+//      } catch (IOException | URISyntaxException e)
+//      {
+//        e.printStackTrace();
+//      }
     }
   }
 
@@ -398,7 +395,8 @@ public class Vision
     /**
      * Estimated robot pose.
      */
-    public        Optional<EstimatedRobotPose> estimatedRobotPose;
+    public Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
+
     /**
      * Simulated camera instance which only exists during simulations.
      */
@@ -410,6 +408,7 @@ public class Vision
     /**
      * Last read from the camera timestamp to prevent lag due to slow data fetches.
      */
+    @SuppressWarnings("unused")
     private       double                       lastReadTimestamp = Microseconds.of(NetworkTablesJNI.now()).in(Seconds);
 
     /**

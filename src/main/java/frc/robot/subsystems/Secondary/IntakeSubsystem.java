@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private SparkFlex intakeMtrLdr;
   private SparkFlex intakeMtrFlw;
   private RelativeEncoder intakeEncLdr;
-  private RelativeEncoder intakeEncFlw;
+//   private RelativeEncoder intakeEncFlw;
   public SparkClosedLoopController  intakeLdrPID;
   public SparkClosedLoopController  intakeFlwPID;
   private SparkFlexSim intakeMtrLdrSim;
@@ -60,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeFlwPID = intakeMtrFlw.getClosedLoopController();
 
     intakeEncLdr = intakeMtrLdr.getEncoder();
-    intakeEncFlw = intakeMtrFlw.getEncoder();
+    // intakeEncFlw = intakeMtrFlw.getEncoder();
 
     ldrCfg
         .inverted(false)
@@ -117,11 +117,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.isSimulation()) {
-        SmartDashboard.putNumber("Intake Lead Speed (RPM)", intakeEncLdrSim.getPosition());
-        SmartDashboard.putNumber("Intake Follower Speed (RPM)", intakeEncFlwSim.getPosition());
+        SmartDashboard.putNumber("Intake (%)", intakeEncLdrSim.getPosition());
+        // SmartDashboard.putNumber("Intake Follower Speed (RPM)", intakeEncFlwSim.getPosition());
     } else {
-        SmartDashboard.putNumber("Intake Lead Speed (RPM)", intakeEncLdr.getPosition());
-        SmartDashboard.putNumber("Intake Follower Speed (RPM)", intakeEncFlw.getPosition());
+        SmartDashboard.putNumber("Intake Speed (%)", intakeEncLdr.getPosition());
+        // SmartDashboard.putNumber("Intake Follower Speed (RPM)", intakeEncFlw.getPosition());
     }
   }
   
