@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems.Secondary;
 
-import edu.wpi.first.wpilibj2.command.Command;
+// import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -14,7 +14,7 @@ import frc.robot.Robot;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
+// import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -39,10 +39,6 @@ public class RotateSubsystem extends SubsystemBase {
     private double kFF = 0.0;
     private double kOutputMin = -0.3;
     private double kOutputMax = 0.3;
-    // private double kMaxRPM = 5676.0;
-    // private double kMaxAccel = 20000.0;
-
-    
 
     public RotateSubsystem() {
         rotateMotor = new SparkFlex(Constants.ArmConstants.ARM_MOTOR_PORT, MotorType.kBrushless);
@@ -61,8 +57,7 @@ public class RotateSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake);
         rotateMtrCfg
             .absoluteEncoder
-                .positionConversionFactor(360)
-                ;
+                .positionConversionFactor(360);
         rotateMtrCfg
             .softLimit
                 .forwardSoftLimit(150.0) 
@@ -71,27 +66,20 @@ public class RotateSubsystem extends SubsystemBase {
             .closedLoop
                 .pidf(kP, kI, kD, kFF)
                 .outputRange(kOutputMin, kOutputMax)
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .maxMotion
-                    .allowedClosedLoopError(2.0);   
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+                // .maxMotion
+                //     .allowedClosedLoopError(2.0);   
                 //     .maxAcceleration(kMaxAccel)
                 //     .maxVelocity(kMaxRPM)
                 //     .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
         rotateMotor.configure(rotateMtrCfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-
-        // //TODO: Add soft limits
-        // rotateMtrSftLmtCfg
-        // .forwardSoftLimit(60.0) 
-        // .reverseSoftLimit(120.0)
-        // .apply(rotateMtrSftLmtCfg);
-            
+           
         // Add motors to the simulation
         if (Robot.isSimulation()) {
             rotateMotorSim = new SparkFlexSim(rotateMotor, DCMotor.getNEO(1));
             rotateEncoderSim = new SparkAbsoluteEncoderSim(rotateMotor);
-            rotateMotorSim.setPosition(90);
-            rotateEncoderSim.setPosition(90);
+            rotateMotorSim.setPosition(190);
+            rotateEncoderSim.setPosition(190);
             rotateMotorSim.setVelocity(0);
             rotateEncoderSim.setVelocity(0);
         }
@@ -109,43 +97,47 @@ public class RotateSubsystem extends SubsystemBase {
     }
 
     public FunctionalCommand RotatePosCmd(double pos) {
-        return new FunctionalCommand(() -> {}, () -> setArm(pos), interrupted -> {}, () -> Math.abs(pos - rotateEncoder.getPosition()) <= 2.0, this);
+        // return new FunctionalCommand(() -> {}, () -> setArm(pos), interrupted -> {}, () -> Math.abs(pos - rotateEncoder.getPosition()) <= 2.0, this);
+        return new FunctionalCommand(() -> {},
+                                     () -> setArm(pos), interrupted -> {},
+                                     () -> (Math.abs(pos - rotateEncoder.getPosition()) <= 5.0) && (Math.abs(rotateEncoder.getVelocity()) <= 60.0),
+                                     this);
     }
 
-    public Command ForwardCmd() {
-    return this.run(
-        () -> {
-            setArm(Constants.ArmConstants.CORAL_INTAKE_POS);
-        });
-    }
+    // public Command ForwardCmd() {
+    // return this.run(
+    //     () -> {
+    //         setArm(Constants.ArmConstants.CORAL_INTAKE_POS);
+    //     });
+    // }
 
-    public Command MiddleCmd() {
-    return this.run(
-        () -> {
-            setArm(Constants.ArmConstants.CORAL_MID_POS);
-        });
-    }
+    // public Command MiddleCmd() {
+    // return this.run(
+    //     () -> {
+    //         setArm(Constants.ArmConstants.CORAL_MID_POS);
+    //     });
+    // }
 
-    public Command UpCmd() {
-      return this.run(
-          () -> {
-              setArm(Constants.ArmConstants.CORAL_HIGH_POS);
-          });
-      }
+    // public Command UpCmd() {
+    //   return this.run(
+    //       () -> {
+    //           setArm(Constants.ArmConstants.CORAL_HIGH_POS);
+    //       });
+    //   }
 
-    public Command AlgaeIntakeCmd () {
-        return this.run(
-            () -> {
-                setArm(Constants.ArmConstants.ALGAE_INTAKE_POS);
-            }); 
-    }
+    // public Command AlgaeIntakeCmd () {
+    //     return this.run(
+    //         () -> {
+    //             setArm(Constants.ArmConstants.ALGAE_INTAKE_POS);
+    //         }); 
+    // }
 
-    public Command AlgaeStartCmd () {
-        return this.run(
-            () -> {
-                setArm(Constants.ArmConstants.ALGAE_START_POS);
-            });
-    }    
+    // public Command AlgaeStartCmd () {
+    //     return this.run(
+    //         () -> {
+    //             setArm(Constants.ArmConstants.ALGAE_START_POS);
+    //         });
+    // }    
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation

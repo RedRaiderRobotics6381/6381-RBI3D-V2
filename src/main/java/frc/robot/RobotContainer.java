@@ -25,7 +25,7 @@ import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Secondary.ElevatorInitCmd;
 // import frc.robot.commands.Secondary.PositionIdentifierCmd;
-import frc.robot.commands.Secondary.PositionIdentifierCmdJK;
+import frc.robot.commands.Secondary.PositionIdentifierCmd;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdg;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.IntakeSubsystem;
@@ -204,7 +204,7 @@ public class RobotContainer
       //                                                  () -> engineerXbox.getLeftX(),
       //                                                  engineerXbox.leftBumper()));
 
-      engineerXbox.leftStick().whileTrue(new PositionIdentifierCmdJK(elevatorSubsystem,
+      engineerXbox.leftStick().whileTrue(new PositionIdentifierCmd(elevatorSubsystem,
                                                                       rotateSubsystem,
                                                                       intakeSubsystem, 
                                                                       () -> engineerXbox.getLeftX(),
