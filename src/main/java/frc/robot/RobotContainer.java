@@ -202,12 +202,12 @@ public class RobotContainer
       driverXbox.y().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
                           Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
                                                         new Transform2d(1.0, 0.0,
-                                                        Rotation2d.fromDegrees(180))))));
+                                                        Rotation2d.fromDegrees(0.0))))));
 
       driverXbox.a().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
                           Vision.getAprilTagPose(AprilTagConstants.HumanPlayerRight,
                                                         new Transform2d(1.0, 0.0,
-                                                        Rotation2d.fromDegrees(0.0))))));
+                                                        Rotation2d.fromDegrees(180.0))))));
 
 
       // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());

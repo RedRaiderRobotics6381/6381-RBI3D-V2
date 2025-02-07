@@ -181,7 +181,7 @@ public void execute()
 
 
 
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingX, headingY);
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), -vY.getAsDouble(), headingX, headingY);
 
     Translation2d translationY = 
     new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble());
