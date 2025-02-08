@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swervedrive;
-
 import static edu.wpi.first.units.Units.Microseconds;
-// import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -46,9 +45,9 @@ import swervelib.telemetry.SwerveDriveTelemetry;
  * Example PhotonVision class to aid in the pursuit of accurate odometry. Taken from
  * https://gitlab.com/ironclad_code/ironclad-2024/-/blob/master/src/main/java/frc/robot/vision/Vision.java?ref_type=heads
  */
+@SuppressWarnings("unused")
 public class Vision
 {
-
   /**
    * April Tag Field Layout of the year.
    */
@@ -190,7 +189,6 @@ public class Vision
    * @param pose Estimated robot pose.
    * @return Could be empty if there isn't a good reading.
    */
-  @SuppressWarnings("unused")
   @Deprecated(since = "2024", forRemoval = true)
   private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
   {
@@ -408,7 +406,6 @@ public class Vision
     /**
      * Last read from the camera timestamp to prevent lag due to slow data fetches.
      */
-    @SuppressWarnings("unused")
     private       double                       lastReadTimestamp = Microseconds.of(NetworkTablesJNI.now()).in(Seconds);
 
     /**

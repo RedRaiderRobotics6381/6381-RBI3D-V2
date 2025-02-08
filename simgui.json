@@ -31,22 +31,7 @@
           "open": true
         }
       },
-      "SPARK MAX [2]": {
-        "header": {
-          "open": true
-        }
-      },
       "SPARK MAX [2] ABSOLUTE ENCODER": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [2] RELATIVE ENCODER": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [4]": {
         "header": {
           "open": true
         }
@@ -90,6 +75,11 @@
         "header": {
           "open": true
         }
+      }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
       }
     }
   },
@@ -170,6 +160,9 @@
     }
   },
   "NetworkTables": {
+    "combined": true,
+    "precision": 3,
+    "properties": true,
     "transitory": {
       "FMSInfo": {
         "open": true
@@ -183,9 +176,13 @@
           "open": true
         }
       }
-    }
+    },
+    "tree": false
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
