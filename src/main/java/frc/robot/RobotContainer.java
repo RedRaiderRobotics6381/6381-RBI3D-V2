@@ -72,14 +72,14 @@ public class RobotContainer
   // and a button will yaw the robot towards a target.
   // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
   Command AbsoluteDriveAdvHdg = new AbsoluteDriveAdvHdg(drivebase,
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
                                                                                                   OperatorConstants.LEFT_Y_DEADBAND) *
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
                                                                     () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
                                                                                                   OperatorConstants.LEFT_X_DEADBAND) *
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
+                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> driverXbox.getHID().getPOV(),
@@ -315,4 +315,20 @@ public class RobotContainer
     }
     
   }
+    //Button 1 is "A" on xbox controller
+    //Button 2 is "B" on xbox controller
+    //Button 3 is "X" on xbox controller  
+    //Button 4 is "Y" on xbox controller
+    //Button 5 is "Left Bumper" on xbox controller
+    //Button 6 is "Right Bumper" on xbox controller
+    //Button 7 is "Back" on xbox controller
+    //Button 8 is "Start" on xbox controller
+    //Button 9 is "Left Joystick" on xbox controller
+    //Button 10 is "Right Joystick" on xbox controller
+    //Axis 0 is left joystick x side to side
+    //Axis 1 is left joystick y forward and back
+    //Axis 2 is left trigger 
+    //Axis 3 is right trigger
+    //Axis 4 is right joystick x side to side
+    //Axis 5 is right joystick y forward and back
 }

@@ -64,9 +64,6 @@ public class AbsoluteDriveAdvHdg extends Command
    * @param lookTarget    Face the robot towards the vision target
    * @param hdgMode       Switch between angle and velocity mode
    */
-  // public AbsoluteDriveAdvHdgAim(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier oX, DoubleSupplier oY,
-  //                         BooleanSupplier lookAway, BooleanSupplier lookTowards, BooleanSupplier lookLeft,
-  //                         BooleanSupplier lookRight, BooleanSupplier lookTarget, BooleanSupplier hdgMode)
     public AbsoluteDriveAdvHdg(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier oX, DoubleSupplier oY,
                               DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier lookPOV, BooleanSupplier hdgMode)
     {
@@ -138,21 +135,6 @@ public void execute()
   
   // System.out.println("Snapped Angle: " + snappedAngle);
 
-  // // Check if snapped angle is one of the allowed values
-  // if (snappedAngle == 60 || snappedAngle == 120 || snappedAngle == 180 ||
-  //     snappedAngle == 240 || snappedAngle == 300 || snappedAngle == 360) {
-      
-  //     // Convert snapped angle to heading vector
-  //     double snappedAngleRadians = Math.toRadians(snappedAngle);
-  //     headingX = Math.cos(snappedAngleRadians);
-  //     headingY = Math.sin(snappedAngleRadians);
-  // } else {
-  //     Rotation2d currentHeading = swerve.getHeading();
-  //     // Negate the heading if not a valid angle
-  //     headingX = currentHeading.getSin();
-  //     headingY = currentHeading.getCos();
-  // }
-
     if (hdgMode.getAsBoolean() && !hdgModePressed) {
         hdgModePressed = true; // Button pressed, set flag to true
 
@@ -171,20 +153,19 @@ public void execute()
         hdgModePressed = false; // Button released, reset flag
     }
 
-    // Face Away from Drivers
-    if (lookPOV.getAsDouble() != -1)
+    if (lookPOV.getAsDouble() != -1) // If the POV is not in the center
     {
-        headingX = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getSin();
-        headingY = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getCos();
-        hdgPOV = true;
+        headingX = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getSin(); // Get the x component of the angle
+        headingY = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getCos(); // Get the y component of the angle
+        hdgPOV = true; // Set the flag to true
     }
 
 
 
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), -vY.getAsDouble(), headingX, headingY);
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), -vY.getAsDouble(), headingX, headingY); // Get the desired chassis speeds based on a 2 joystick module.
 
     Translation2d translationY = 
-    new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble());
+    new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble()); // Get the translation for the y-axis
     // Limit velocity to prevent tipping
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
     translation = SwerveMath.limitVelocity(translation, swerve.getFieldVelocity(), swerve.getPose(),
