@@ -104,8 +104,8 @@ public void execute()
   // Snap to the nearest 60-degree increment
   double snappedAngle = Math.round(angle / 60.0) * 60.0;
   if (headingX != 0 || headingY != 0) {
-    headingX = Math.sin(Math.toRadians(-snappedAngle));
-    headingY = Math.cos(Math.toRadians(-snappedAngle));
+    headingX = Math.sin(Math.toRadians(snappedAngle));
+    headingY = Math.cos(Math.toRadians(snappedAngle));
   } else {
     Rotation2d currentHeading = swerve.getHeading(); 
     headingX = currentHeading.getSin();
@@ -150,8 +150,8 @@ public void execute()
     // Face Away from Drivers
     if (lookPOV.getAsDouble() != -1)
     {
-        headingX = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getSin();
-        headingY = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getCos();
+        headingX = Rotation2d.fromDegrees(lookPOV.getAsDouble()).getSin();
+        headingY = Rotation2d.fromDegrees(lookPOV.getAsDouble()).getCos();
         hdgPOV = true;
     }
 
@@ -182,7 +182,7 @@ public void execute()
       if (translationY.getY() != 0) {
         swerve.drive(translationY, 0, false);
       } else {
-        swerve.drive(translation, MathUtil.applyDeadband(-oX.getAsDouble() * 5, OperatorConstants.RIGHT_X_DEADBAND), true);
+        swerve.drive(translation, MathUtil.applyDeadband(oX.getAsDouble() * 5, OperatorConstants.RIGHT_X_DEADBAND), true);
       }
     }
 }

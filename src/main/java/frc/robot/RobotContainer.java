@@ -71,16 +71,16 @@ public class RobotContainer
   // and a button will yaw the robot towards a target.
   // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
   Command AbsoluteDriveAdvHdg = new AbsoluteDriveAdvHdg(drivebase,
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
                                                                                                   OperatorConstants.LEFT_Y_DEADBAND) *
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
+                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
                                                                                                   OperatorConstants.LEFT_X_DEADBAND) *
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
                                                                     () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> driverXbox.getHID().getPOV(),
                                                                     driverXbox.rightStick());
 
