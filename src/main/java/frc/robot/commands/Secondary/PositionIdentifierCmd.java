@@ -131,9 +131,9 @@ public class PositionIdentifierCmd extends Command {
             // rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
         } else if (snappedInputAngle == 90.0) { //if the joystick is in the middle
             Commands.sequence(
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE), // 6.125 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE+0.5), // 6.125 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 165 degrees
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE + 0.5), // 6.625 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE + 1.0), // 6.625 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS), // 240 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.HUMAN_PLAYER_POSE)) // 0.0 inches
             .schedule();
@@ -141,9 +141,9 @@ public class PositionIdentifierCmd extends Command {
             // rotatePose = Constants.ArmConstants.CORAL_MID_POS;
         } else if (snappedInputAngle == 135.0) { //if the joystick is pushed down
             Commands.sequence(
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE), // 0.5 inches
-                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS + 7.5), // 172.5 degrees
-               elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE + 0.5), // 1.0 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE+0.5), // 0.5 inches
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 172.5 degrees
+               elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE + 1.0), // 1.0 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS), // 240 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.HUMAN_PLAYER_POSE)) // 0.0 inches
             .schedule();
