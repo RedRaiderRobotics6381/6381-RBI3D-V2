@@ -8,12 +8,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -60,9 +64,6 @@ public class AbsoluteDriveAdvHdg extends Command
    * @param lookTarget    Face the robot towards the vision target
    * @param hdgMode       Switch between angle and velocity mode
    */
-  // public AbsoluteDriveAdvHdgAim(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier oX, DoubleSupplier oY,
-  //                         BooleanSupplier lookAway, BooleanSupplier lookTowards, BooleanSupplier lookLeft,
-  //                         BooleanSupplier lookRight, BooleanSupplier lookTarget, BooleanSupplier hdgMode)
     public AbsoluteDriveAdvHdg(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier oX, DoubleSupplier oY,
                               DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier lookPOV, BooleanSupplier hdgMode)
     {
@@ -106,6 +107,26 @@ public void execute()
   if (headingX != 0 || headingY != 0) {
     headingX = Math.sin(Math.toRadians(snappedAngle));
     headingY = Math.cos(Math.toRadians(snappedAngle));
+
+    Optional<Alliance> allianceColor = DriverStation.getAlliance();
+    if (allianceColor.isPresent()) {
+      if (allianceColor.get() == Alliance.Red) {
+        if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 7 ;};
+        if(snappedAngle ==  60.0){AprilTagConstants.ReefTagID = 8 ;};
+        if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 9 ;};
+        if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 10;};
+        if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 11;};
+        if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 6 ;};
+      }
+      else if (allianceColor.get() == Alliance.Blue) {
+        if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 18;};
+        if(snappedAngle ==  60.0){AprilTagConstants.ReefTagID = 19;};
+        if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 20;};
+        if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 21;};
+        if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 22;};
+        if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 17;};
+      }
+    }
   } else {
     Rotation2d currentHeading = swerve.getHeading(); 
     headingX = currentHeading.getSin();
@@ -113,21 +134,6 @@ public void execute()
   }
   
   // System.out.println("Snapped Angle: " + snappedAngle);
-
-  // // Check if snapped angle is one of the allowed values
-  // if (snappedAngle == 60 || snappedAngle == 120 || snappedAngle == 180 ||
-  //     snappedAngle == 240 || snappedAngle == 300 || snappedAngle == 360) {
-      
-  //     // Convert snapped angle to heading vector
-  //     double snappedAngleRadians = Math.toRadians(snappedAngle);
-  //     headingX = Math.cos(snappedAngleRadians);
-  //     headingY = Math.sin(snappedAngleRadians);
-  // } else {
-  //     Rotation2d currentHeading = swerve.getHeading();
-  //     // Negate the heading if not a valid angle
-  //     headingX = currentHeading.getSin();
-  //     headingY = currentHeading.getCos();
-  // }
 
     if (hdgMode.getAsBoolean() && !hdgModePressed) {
         hdgModePressed = true; // Button pressed, set flag to true
@@ -147,9 +153,11 @@ public void execute()
         hdgModePressed = false; // Button released, reset flag
     }
 
-    // Face Away from Drivers
-    if (lookPOV.getAsDouble() != -1)
+    if (lookPOV.getAsDouble() != -1) // If the POV is not in the center
     {
+        headingX = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getSin(); // Get the x component of the angle
+        headingY = Rotation2d.fromDegrees(-lookPOV.getAsDouble()).getCos(); // Get the y component of the angle
+        hdgPOV = true; // Set the flag to true
         headingX = Rotation2d.fromDegrees(lookPOV.getAsDouble()).getSin();
         headingY = Rotation2d.fromDegrees(lookPOV.getAsDouble()).getCos();
         hdgPOV = true;
@@ -157,10 +165,10 @@ public void execute()
 
 
 
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingX, headingY);
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), -vY.getAsDouble(), headingX, headingY); // Get the desired chassis speeds based on a 2 joystick module.
 
     Translation2d translationY = 
-    new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble());
+    new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble()); // Get the translation for the y-axis
     // Limit velocity to prevent tipping
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
     translation = SwerveMath.limitVelocity(translation, swerve.getFieldVelocity(), swerve.getPose(),

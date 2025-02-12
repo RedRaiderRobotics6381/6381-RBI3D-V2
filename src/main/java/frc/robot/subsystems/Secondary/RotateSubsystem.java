@@ -151,9 +151,9 @@ public class RotateSubsystem extends SubsystemBase {
     public void periodic() {
     // This method will be called once per scheduler run
     if (Robot.isSimulation()) {
-        SmartDashboard.putNumber("Rotate Speed (RPM)", rotateEncoderSim.getPosition());
+        SmartDashboard.putNumber("Arm Position", rotateEncoderSim.getPosition());
     } else {
-        SmartDashboard.putNumber("Rotate Speed (RPM)", rotateEncoder.getPosition());
+        SmartDashboard.putNumber("Arm Position", rotateEncoder.getPosition());
     }
     }
 }

@@ -4,16 +4,20 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import com.reduxrobotics.canand.CanandEventLoop;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.swervedrive.Vision;
+import frc.robot.Constants.AprilTagConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as
@@ -142,6 +146,36 @@ public class Robot extends TimedRobot
       CommandScheduler.getInstance().cancelAll();
     }
     m_robotContainer.initElevator();
+
+    Optional<Alliance> allianceColor = DriverStation.getAlliance();
+    if (allianceColor.isPresent()) {
+      if (allianceColor.get() == Alliance.Red) {
+        AprilTagConstants.Reef0   = 7 ;
+        AprilTagConstants.Reef60  = 8 ;
+        AprilTagConstants.Reef120 = 9 ;
+        AprilTagConstants.Reef180 = 10;
+        AprilTagConstants.Reef240 = 11;
+        AprilTagConstants.Reef300 = 6 ;
+        AprilTagConstants.HumanPlayerLeft = 1;
+        AprilTagConstants.HumanPlayerRight = 2;
+        AprilTagConstants.Processor = 3;
+        AprilTagConstants.BargeFront = 5;
+        AprilTagConstants.BargeBack = 15;
+      }
+      else if (allianceColor.get() == Alliance.Blue) {
+        AprilTagConstants.Reef0    = 18;
+        AprilTagConstants.Reef60   = 19;
+        AprilTagConstants.Reef120  = 20;
+        AprilTagConstants.Reef180  = 21;
+        AprilTagConstants.Reef240  = 22;
+        AprilTagConstants.Reef300  = 17;
+        AprilTagConstants.HumanPlayerLeft = 13;
+        AprilTagConstants.HumanPlayerRight = 12;
+        AprilTagConstants.Processor = 16;
+        AprilTagConstants.BargeFront = 14;
+        AprilTagConstants.BargeBack = 4;
+      }
+    }
     
   }
 

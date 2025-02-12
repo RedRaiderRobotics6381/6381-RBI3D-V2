@@ -4,10 +4,9 @@
 
 package frc.robot.commands.Secondary;
 
-// import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import frc.robot.Constants;
-// import frc.robot.Constants.ArmConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
@@ -20,17 +19,14 @@ public class PositionIdentifierCmd extends Command {
     private final RotateSubsystem rotateSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final DoubleSupplier  oX, oY;
-    // private final BooleanSupplier algeaBol;
-    // private double pose; // initialize the pose variable
-    // private double rotatePose; // initialize the rotatePose variable
+
     /**
-     * Command to set the position of the elevator and rotate subsystems based on inputs from multiple buttons and a stick.
-     *
+     * Command to set the position of the elevator and rotate subsystems based on inputs a stick.
      * @param elevatorSubsystem The subsystem responsible for controlling the elevator mechanism.
      * @param rotateSubsystem The subsystem responsible for controlling the rotation mechanism.
+     * @param intakeSubsystem The subsystem responsible for controlling the intake mechanism.
      * @param oX A DoubleSupplier providing the X coordinate of the input stick which will be rounded to 45 degree increments.
      * @param oY A DoubleSupplier providing the Y coordinate of the input stick which will be rounded to 45 degree increments.
-     * @param algeaBol A BooleanSupplier indicating whether the button calling to pick up algea is pressed
      */
     public PositionIdentifierCmd(ElevatorSubsystem elevatorSubsystem, RotateSubsystem rotateSubsystem, IntakeSubsystem intakeSubsystem, DoubleSupplier oX, DoubleSupplier oY){
         
@@ -39,8 +35,6 @@ public class PositionIdentifierCmd extends Command {
         this.intakeSubsystem = intakeSubsystem;
         this.oX = oX;
         this.oY = oY;
-        // this.algeaBol = algeaBol;
-
         addRequirements(elevatorSubsystem, rotateSubsystem, intakeSubsystem);  
     }
 
@@ -50,23 +44,21 @@ public class PositionIdentifierCmd extends Command {
 
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     /**
-     * Executes the command to set the elevator and arm positions based on joystick input.
+     * Executes the command based on the joystick input.
      * 
-     * The method reads the joystick X and Y axis values to determine the input angle.
-     * If the joystick is pushed, the input angle is snapped to the nearest 45-degree increment.
-     * Based on the snapped input angle and the state of the algeaBol button, the method sets the 
-     * elevator and arm positions to predefined constants.
+     * This method reads the joystick's X and Y axis values, calculates the angle,
+     * and snaps it to the nearest 45-degree increment. Depending on the snapped
+     * angle, it schedules different sequences of commands for the robot's subsystems.
      * 
-     * The possible positions are:
-     * - ALGAE_PICKUP_HIGH_POSE and ALGAE_INTAKE_POS if the joystick is pushed up and algeaBol is true.
-     * - ALGAE_PICKUP_LOW_POSE and ALGAE_INTAKE_POS if the joystick is in the middle and algeaBol is true.
-     * - REEF_HIGH_POSE and CORAL_HIGH_POS if the joystick is pushed up.
-     * - REEF_MIDDLE_POSE and CORAL_HIGH_POS if the joystick is in the middle.
-     * - REEF_LOW_POSE and CORAL_HIGH_POS if the joystick is pushed down.
+     * The possible snapped angles and their corresponding actions are:
+     * - 315.0: Rotate to ALGAE_INTAKE_POS, run intake at 15% speed, then elevate to ALGAE_PICKUP_HIGH_POSE, rotate to CORAL_MID_POS, and run intake at 10% speed.
+     * - 225.0: Rotate to ALGAE_INTAKE_POS, run intake at 15% speed, then elevate to ALGAE_PICKUP_LOW_POSE, rotate to CORAL_MID_POS, and run intake at 10% speed.
+     * - 45.0: Elevate to REEF_HIGH_POSE, rotate to CORAL_HIGH_POS, elevate slightly more, rotate to ALGAE_INTAKE_POS, and elevate to HUMAN_PLAYER_POSE.
+     * - 90.0: Elevate to REEF_MIDDLE_POSE, rotate to CORAL_MID_POS, elevate slightly more, rotate to ALGAE_INTAKE_POS, and elevate to HUMAN_PLAYER_POSE.
+     * - 135.0: Elevate to REEF_LOW_POSE, rotate slightly more, elevate slightly more, rotate to ALGAE_INTAKE_POS, and elevate to HUMAN_PLAYER_POSE.
      * 
-     * Finally, the method sets the elevator height and arm position using the calculated pose values.
+     * If the joystick is not pushed beyond a threshold, no action is taken.
      */
     @Override
     public void execute() {
@@ -82,9 +74,9 @@ public class PositionIdentifierCmd extends Command {
             inputAngle = (inputAngle + 360) % 360; // 360 degrees in a circle
             snappedInputAngle = Math.round(inputAngle / 45) * 45.0; // 45 degree increments
             snappedInputAngle = (snappedInputAngle + 360) % 360; // normalize to 0-360
-            // System.out.println("Snapped Angle: " + snappedInputAngle + " oXRaw " + oXRaw + " oYRaw " + oYRaw);
         }
         //System.out.println("Snapped Angle: " + snappedInputAngle);
+        SmartDashboard.putNumber("Engineer Snapped Angle", snappedInputAngle); // display the snapped angle on the SmartDashboard
     
         if (snappedInputAngle == 315.0) { //if the joystick is pushed up and to the left
             Commands.race(
@@ -108,10 +100,23 @@ public class PositionIdentifierCmd extends Command {
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 165 degrees
                 intakeSubsystem.RunIntakeCmd(0.1))) // 10% speed of ~5600 RPM
             .schedule();
+        } else if (snappedInputAngle == 0.0) { //if the joystick is pushed up
+            Commands.parallel(
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE),
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS)
+                ) // 240 degrees
+            .andThen(
+            Commands.race(
+                intakeSubsystem.OuttakeCmd(), // 10% speed of ~5600 RPM
+                Commands.parallel(
+                    elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE),
+                    rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_INTAKE_POS)
+                // elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE) // 0.0 inches
+                )))
+            .schedule();
             // pose = Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE;
             // rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
 // TODO: how are we going to access these in autonomous?
-// TODO: add a sequence to score the algae in the processor when the stick is at 180 degrees
 // TODO: add a sequence to score the algae in the processor when the stick is at 180 degrees
         } else if (snappedInputAngle == 45.0) { //if the joystick is pushed up and to the right
             Commands.sequence(
@@ -125,9 +130,9 @@ public class PositionIdentifierCmd extends Command {
             // rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
         } else if (snappedInputAngle == 90.0) { //if the joystick is in the middle
             Commands.sequence(
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE), // 6.125 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE+0.5), // 6.125 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 165 degrees
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE + 0.5), // 6.625 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE + 1.0), // 6.625 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS), // 240 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.HUMAN_PLAYER_POSE)) // 0.0 inches
             .schedule();
@@ -135,9 +140,9 @@ public class PositionIdentifierCmd extends Command {
             // rotatePose = Constants.ArmConstants.CORAL_MID_POS;
         } else if (snappedInputAngle == 135.0) { //if the joystick is pushed down
             Commands.sequence(
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE), // 0.5 inches
-                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS + 7.5), // 172.5 degrees
-               elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE + 0.5), // 1.0 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE+0.5), // 0.5 inches
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 172.5 degrees
+               elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE + 1.0), // 1.0 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS), // 240 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.HUMAN_PLAYER_POSE)) // 0.0 inches
             .schedule();

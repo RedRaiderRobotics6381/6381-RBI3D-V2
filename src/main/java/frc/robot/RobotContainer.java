@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.DrivebaseConstants;
 // import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -179,19 +180,34 @@ public class RobotContainer
     }
     if (DriverStation.isTest())
     {
-      driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
+      // driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      // driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
     } else
     {
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.back().whileTrue(drivebase.centerModulesCommand());
 
       driverXbox.b().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
-                          Vision.getAprilTagPose(18,
-                                                        new Transform2d(1.0, 0,
+                          Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
+                                                        new Transform2d(1.0, -.164338,
                                                         Rotation2d.fromDegrees(180))))));
 
+      driverXbox.x().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
+                          Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
+                                                        new Transform2d(1.0, .164338,
+                                                        Rotation2d.fromDegrees(180))))));
+
+      driverXbox.y().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
+                          Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
+                                                        new Transform2d(1.0, 0.0,
+                                                        Rotation2d.fromDegrees(0.0))))));
+
+      driverXbox.a().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
+                          Vision.getAprilTagPose(AprilTagConstants.HumanPlayerRight,
+                                                        new Transform2d(1.0, 0.0,
+                                                        Rotation2d.fromDegrees(180.0))))));
 
 
       // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
@@ -299,5 +315,20 @@ public class RobotContainer
     }
     
   }
-
+    //Button 1 is "A" on xbox controller
+    //Button 2 is "B" on xbox controller
+    //Button 3 is "X" on xbox controller  
+    //Button 4 is "Y" on xbox controller
+    //Button 5 is "Left Bumper" on xbox controller
+    //Button 6 is "Right Bumper" on xbox controller
+    //Button 7 is "Back" on xbox controller
+    //Button 8 is "Start" on xbox controller
+    //Button 9 is "Left Joystick" on xbox controller
+    //Button 10 is "Right Joystick" on xbox controller
+    //Axis 0 is left joystick x side to side
+    //Axis 1 is left joystick y forward and back
+    //Axis 2 is left trigger 
+    //Axis 3 is right trigger
+    //Axis 4 is right joystick x side to side
+    //Axis 5 is right joystick y forward and back
 }

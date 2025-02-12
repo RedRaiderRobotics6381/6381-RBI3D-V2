@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swervedrive;
-
 import static edu.wpi.first.units.Units.Microseconds;
-// import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -24,9 +23,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
 import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,9 +45,9 @@ import swervelib.telemetry.SwerveDriveTelemetry;
  * Example PhotonVision class to aid in the pursuit of accurate odometry. Taken from
  * https://gitlab.com/ironclad_code/ironclad-2024/-/blob/master/src/main/java/frc/robot/vision/Vision.java?ref_type=heads
  */
+@SuppressWarnings("unused")
 public class Vision
 {
-
   /**
    * April Tag Field Layout of the year.
    */
@@ -193,7 +189,6 @@ public class Vision
    * @param pose Estimated robot pose.
    * @return Could be empty if there isn't a good reading.
    */
-  @SuppressWarnings("unused")
   @Deprecated(since = "2024", forRemoval = true)
   private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
   {
@@ -290,15 +285,15 @@ public class Vision
   {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
     {
-     try
-     {
-       Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
-       Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
-      //  Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
-     } catch (IOException | URISyntaxException e)
-     {
-       e.printStackTrace();
-     }
+//      try
+//      {
+//        Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
+//        Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
+//        Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
+//      } catch (IOException | URISyntaxException e)
+//      {
+//        e.printStackTrace();
+//      }
     }
   }
 
@@ -398,7 +393,8 @@ public class Vision
     /**
      * Estimated robot pose.
      */
-    public        Optional<EstimatedRobotPose> estimatedRobotPose;
+    public Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
+
     /**
      * Simulated camera instance which only exists during simulations.
      */
