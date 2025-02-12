@@ -100,6 +100,20 @@ public class PositionIdentifierCmd extends Command {
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 165 degrees
                 intakeSubsystem.RunIntakeCmd(0.1))) // 10% speed of ~5600 RPM
             .schedule();
+        } else if (snappedInputAngle == 0.0) { //if the joystick is pushed left
+            Commands.parallel(
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE),
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS)
+                ) // 240 degrees
+            .andThen(
+            Commands.race(
+                intakeSubsystem.OuttakeCmd(), // 10% speed of ~5600 RPM
+                Commands.parallel(
+                    elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE),
+                    rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_INTAKE_POS)
+                // elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE) // 0.0 inches
+                )))
+            .schedule();
             // pose = Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE;
             // rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
 // TODO: how are we going to access these in autonomous?
