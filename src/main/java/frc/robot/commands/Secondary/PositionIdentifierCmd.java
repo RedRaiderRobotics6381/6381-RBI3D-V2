@@ -100,7 +100,7 @@ public class PositionIdentifierCmd extends Command {
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 165 degrees
                 intakeSubsystem.RunIntakeCmd(0.1))) // 10% speed of ~5600 RPM
             .schedule();
-        } else if (snappedInputAngle == 0.0) { //if the joystick is pushed left
+        } else if (snappedInputAngle == 0.0) { //if the joystick is pushed up
             Commands.parallel(
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE),
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS)
@@ -117,7 +117,6 @@ public class PositionIdentifierCmd extends Command {
             // pose = Constants.ElevatorConstants.ALGAE_PICKUP_LOW_POSE;
             // rotatePose = Constants.ArmConstants.ALGAE_INTAKE_POS;
 // TODO: how are we going to access these in autonomous?
-// TODO: add a sequence to score the algae in the processor when the stick is at 180 degrees
 // TODO: add a sequence to score the algae in the processor when the stick is at 180 degrees
         } else if (snappedInputAngle == 45.0) { //if the joystick is pushed up and to the right
             Commands.sequence(
