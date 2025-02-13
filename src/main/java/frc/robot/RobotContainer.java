@@ -14,8 +14,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 // import edu.wpi.first.math.proto.System;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -41,6 +43,7 @@ import java.io.File;
 // import swervelib.SwerveInputStream;
 // import java.util.function.BooleanSupplier;
 // import java.util.function.DoubleSupplier;
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -59,7 +62,9 @@ public class RobotContainer
 
   private final RotateSubsystem rotateSubsystem = new RotateSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();       
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  public double currentSnappedAngle = 0;
+  public double snappedAngle = 0;       
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -205,9 +210,10 @@ public class RobotContainer
                                                         Rotation2d.fromDegrees(0.0))))));
 
       driverXbox.a().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
-                          Vision.getAprilTagPose(AprilTagConstants.HumanPlayerRight,
+                          Vision.getAprilTagPose(AprilTagConstants.HumanPlayerLeft,
                                                         new Transform2d(1.0, 0.0,
                                                         Rotation2d.fromDegrees(180.0))))));
+                                                        //.alongWith(Commands.run(() -> SmartDashboard.putNumber("Offset", vision.getDistanceFromAprilTag(AprilTagConstants.HumanPlayerRight)))));
 
 
       // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
@@ -314,6 +320,66 @@ public class RobotContainer
       DrivebaseConstants.Max_Speed_Multiplier = .75;
     }
     
+  }
+
+    /**
+   * Calculates the snapped angle based on the current heading of the swerve drive.
+   * The angle is normalized to the range [0, 360) and then snapped to the nearest 60-degree increment.
+   * If the snapped angle changes, it updates the current snapped angle and sets the appropriate AprilTag ID
+   * based on the alliance color (Red or Blue).
+   *
+   * The AprilTag ID is determined as follows:
+   * - For the Red alliance:
+   *   - 0.0 degrees: AprilTag ID 7
+   *   - 60.0 degrees: AprilTag ID 8
+   *   - 120.0 degrees: AprilTag ID 9
+   *   - 180.0 degrees: AprilTag ID 10
+   *   - 240.0 degrees: AprilTag ID 11
+   *   - 300.0 degrees: AprilTag ID 6
+   * - For the Blue alliance:
+   *   - 0.0 degrees: AprilTag ID 18
+   *   - 60.0 degrees: AprilTag ID 19
+   *   - 120.0 degrees: AprilTag ID 20
+   *   - 180.0 degrees: AprilTag ID 21
+   *   - 240.0 degrees: AprilTag ID 22
+   *   - 300.0 degrees: AprilTag ID 17
+   */
+  void getSnappedAngle(){
+    Rotation2d currentHeading = drivebase.getHeading();   
+    double angle = Math.toDegrees(Math.atan2(currentHeading.getCos(), currentHeading.getSin()))-270;
+    // Normalize to the range [0, 360)
+    angle = (angle + 360) % 360;
+
+    // Snap to the nearest 60-degree increment
+    snappedAngle = Math.round(angle / 60.0) * 60.0;
+    if (snappedAngle != currentSnappedAngle){
+      currentSnappedAngle = snappedAngle;
+      
+      // if (headingX != 0 || headingY != 0) {
+      //   headingX = Math.sin(Math.toRadians(snappedAngle));
+      //   headingY = Math.cos(Math.toRadians(snappedAngle));
+
+      Optional<Alliance> allianceColor = DriverStation.getAlliance();
+      if (allianceColor.isPresent()) {
+        if (allianceColor.get() == Alliance.Red) {
+          if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 7 ;};
+          if(snappedAngle ==  60.0){AprilTagConstants.ReefTagID = 8 ;};
+          if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 9 ;};
+          if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 10;};
+          if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 11;};
+          if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 6 ;};
+        }
+        else if (allianceColor.get() == Alliance.Blue) {
+          if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 18;};
+          if(snappedAngle ==  60.0){AprilTagConstants.ReefTagID = 19;};
+          if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 20;};
+          if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 21;};
+          if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 22;};
+          if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 17;};
+        }
+      }
+
+    }
   }
     //Button 1 is "A" on xbox controller
     //Button 2 is "B" on xbox controller
