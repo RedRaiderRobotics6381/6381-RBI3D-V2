@@ -162,7 +162,7 @@ public void execute()
 
 
 
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), -vY.getAsDouble(), headingX, headingY); // Get the desired chassis speeds based on a 2 joystick module.
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(-vX.getAsDouble(), -vY.getAsDouble(), headingX, headingY); // Get the desired chassis speeds based on a 2 joystick module.
 
     Translation2d translationY = 
     new Translation2d(0, leftY.getAsDouble() - rightY.getAsDouble()); // Get the translation for the y-axis

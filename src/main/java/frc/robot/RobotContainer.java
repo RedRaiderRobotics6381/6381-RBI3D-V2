@@ -83,8 +83,8 @@ public class RobotContainer
                                                                     () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
                                                                                                   OperatorConstants.LEFT_X_DEADBAND) *
                                                                                                   DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
+                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
+                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> -MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> -MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
                                                                     () -> driverXbox.getHID().getPOV(),
@@ -196,21 +196,21 @@ public class RobotContainer
 
       driverXbox.b().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
                           Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
-                                                        new Transform2d(1.0, -.164338,
+                                                        new Transform2d(0.6604, -.164338,
                                                         Rotation2d.fromDegrees(180))))));
 
       driverXbox.x().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
                           Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
-                                                        new Transform2d(1.0, .164338,
+                                                        new Transform2d(0.6604, .164338,
                                                         Rotation2d.fromDegrees(180))))));
 
       driverXbox.y().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
                           Vision.getAprilTagPose(AprilTagConstants.ReefTagID,
-                                                        new Transform2d(1.0, 0.0,
+                                                        new Transform2d(0.5, 0.0,
                                                         Rotation2d.fromDegrees(0.0))))));
 
       driverXbox.a().whileTrue(Commands.deferredProxy(() -> drivebase.driveToPose(
-                          Vision.getAprilTagPose(AprilTagConstants.HumanPlayerLeft,
+                          Vision.getAprilTagPose(AprilTagConstants.HumanPlayerRight,
                                                         new Transform2d(1.0, 0.0,
                                                         Rotation2d.fromDegrees(180.0))))));
                                                         //.alongWith(Commands.run(() -> SmartDashboard.putNumber("Offset", vision.getDistanceFromAprilTag(AprilTagConstants.HumanPlayerRight)))));
@@ -362,20 +362,20 @@ public class RobotContainer
       Optional<Alliance> allianceColor = DriverStation.getAlliance();
       if (allianceColor.isPresent()) {
         if (allianceColor.get() == Alliance.Red) {
-          if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 7 ;};
-          if(snappedAngle ==  60.0){AprilTagConstants.ReefTagID = 8 ;};
-          if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 9 ;};
-          if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 10;};
-          if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 11;};
-          if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 6 ;};
+          if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 7 ;};
+          if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 8 ;};
+          if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 9 ;};
+          if(snappedAngle == 0.0){AprilTagConstants.ReefTagID = 10;};
+          if(snappedAngle == 60.0){AprilTagConstants.ReefTagID = 11;};
+          if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 6 ;};
         }
         else if (allianceColor.get() == Alliance.Blue) {
-          if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 18;};
-          if(snappedAngle ==  60.0){AprilTagConstants.ReefTagID = 19;};
-          if(snappedAngle == 120.0){AprilTagConstants.ReefTagID = 20;};
-          if(snappedAngle == 180.0){AprilTagConstants.ReefTagID = 21;};
-          if(snappedAngle == 240.0){AprilTagConstants.ReefTagID = 22;};
-          if(snappedAngle == 300.0){AprilTagConstants.ReefTagID = 17;};
+          if(snappedAngle ==   180.0){AprilTagConstants.ReefTagID = 18;};
+          if(snappedAngle ==   240.0){AprilTagConstants.ReefTagID = 19;};
+          if(snappedAngle ==   300){AprilTagConstants.ReefTagID = 20;};
+          if(snappedAngle ==   0.0){AprilTagConstants.ReefTagID = 21;};
+          if(snappedAngle ==   60.0){AprilTagConstants.ReefTagID = 22;};
+          if(snappedAngle ==   120.0){AprilTagConstants.ReefTagID = 17;};
         }
       }
 
