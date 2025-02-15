@@ -104,6 +104,17 @@ public class RotateSubsystem extends SubsystemBase {
                                      this);
     }
 
+    public FunctionalCommand IntakePosCmd(double pos) {
+        // return new FunctionalCommand(() -> {}, () -> setArm(pos), interrupted -> {}, () -> Math.abs(pos - rotateEncoder.getPosition()) <= 2.0, this);
+        return new FunctionalCommand(() -> {},
+                                     () -> setArm(pos), interrupted -> {setArm(Constants.ArmConstants.DRIVE_POS);},
+                                     () -> Robot.coralSensor.get(),
+                                     this);
+    }
+
+
+
+
     // public Command ForwardCmd() {
     // return this.run(
     //     () -> {

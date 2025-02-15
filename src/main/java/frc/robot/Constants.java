@@ -76,6 +76,8 @@ public final class Constants
     public static final int CORAL_HIGH_POS = 150;
     public static final int ALGAE_INTAKE_POS = 240;
     public static final int ALGAE_START_POS = 280;
+    public static final int ALGAE_BARGE_POS = 225;
+    public static final int DRIVE_POS = 210;
   }
 
   // public static class ServoConstants {

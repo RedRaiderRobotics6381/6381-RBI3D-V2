@@ -6,9 +6,11 @@ package frc.robot.commands.Secondary;
 
 import java.util.function.DoubleSupplier;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.IntakeSubsystem;
 import frc.robot.subsystems.Secondary.RotateSubsystem;
@@ -75,6 +77,8 @@ public class PositionIdentifierCmd extends Command {
             snappedInputAngle = Math.round(inputAngle / 45) * 45.0; // 45 degree increments
             snappedInputAngle = (snappedInputAngle + 360) % 360; // normalize to 0-360
         }
+        
+        
         //System.out.println("Snapped Angle: " + snappedInputAngle);
         SmartDashboard.putNumber("Engineer Snapped Angle", snappedInputAngle); // display the snapped angle on the SmartDashboard
     
@@ -103,7 +107,7 @@ public class PositionIdentifierCmd extends Command {
         } else if (snappedInputAngle == 0.0) { //if the joystick is pushed up
             Commands.parallel(
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE),
-                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS)
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_BARGE_POS)
                 ) // 240 degrees
             .andThen(
             Commands.race(
@@ -128,8 +132,8 @@ public class PositionIdentifierCmd extends Command {
             .schedule();
             // pose = Constants.ElevatorConstants.REEF_HIGH_POSE;
             // rotatePose = Constants.ArmConstants.CORAL_HIGH_POS;
-        } else if (snappedInputAngle == 90.0) { //if the joystick is in the middle
-            Commands.sequence(
+        } else if (snappedInputAngle == 90.0) { //if the joystick is in the middle / right
+            Commands.sequence( 
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE+0.5), // 6.125 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 165 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_MIDDLE_POSE + 1.0), // 6.625 inches
@@ -138,7 +142,7 @@ public class PositionIdentifierCmd extends Command {
             .schedule();
             // pose = Constants.ElevatorConstants.REEF_MIDDLE_POSE;
             // rotatePose = Constants.ArmConstants.CORAL_MID_POS;
-        } else if (snappedInputAngle == 135.0) { //if the joystick is pushed down
+        } else if (snappedInputAngle == 135.0) { //if the joystick is pushed down / right
             Commands.sequence(
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE+0.5), // 0.5 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 172.5 degrees
@@ -148,12 +152,23 @@ public class PositionIdentifierCmd extends Command {
             .schedule();
             // pose = Constants.ElevatorConstants.REEF_LOW_POSE;
             // rotatePose = Constants.ArmConstants.CORAL_MID_POS;
-        }
+        }   else if (snappedInputAngle == 270.0) {
+            Commands.sequence(
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_START_POS)) // 240 degrees // 15% speed of ~5600 RPM
+            .andThen(
+            Commands.sequence(
+                intakeSubsystem.RunIntakeCmd(0.1)))    
+            .schedule();
+        }   else if (snappedInputAngle == 180) {
+             Commands.sequence(
+                 rotateSubsystem.IntakePosCmd(Constants.ArmConstants.CORAL_INTAKE_POS)).schedule();
+        }   
+    }
     
 
         // elevatorSubsystem.setElevatorHeight(pose);
         // if(Math.abs(pose - elevatorSubsystem.elevEncLdr.getPosition()) <= 0.125){
         //     rotateSubsystem.setArm(rotatePose);
         // }
-    }
 }
+

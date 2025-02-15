@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Secondary;
 
+import com.ctre.phoenix.motorcontrol.SensorCollection;
+import com.ctre.phoenix6.configs.DigitalInputsConfigs;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
@@ -17,6 +19,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private SparkFlex intakeMtrLdr;
   private SparkFlex intakeMtrFlw;
   private RelativeEncoder intakeEncLdr;
+
 //   private RelativeEncoder intakeEncFlw;
   public SparkClosedLoopController  intakeLdrPID;
   public SparkClosedLoopController  intakeFlwPID;
@@ -53,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
     
     ldrCfg = new SparkFlexConfig();
     flwCfg = new SparkFlexConfig();
+
     // SoftLimitConfig leaderSoftLimit = new SoftLimitConfig();
     // SoftLimitConfig followerSoftLimit = new SoftLimitConfig();
 
@@ -163,7 +168,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return this.runEnd(
         () -> {
             // runIntake(Constants.IntakeConstants.OUTTAKE_SPEED);
-            intakeMtrLdr.set(-0.15);
+            intakeMtrLdr.set(-0.20);
         },
         () -> {
             // runIntake(Constants.IntakeConstants.STOP_SPEED);

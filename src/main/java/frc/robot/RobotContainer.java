@@ -60,9 +60,10 @@ public class RobotContainer
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
 
-  private final RotateSubsystem rotateSubsystem = new RotateSubsystem();
+  public final RotateSubsystem rotateSubsystem = new RotateSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
   public double currentSnappedAngle = 0;
   public double snappedAngle = 0;       
 
@@ -157,7 +158,23 @@ public class RobotContainer
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+    NamedCommands.registerCommand("AlgaeIntakePos", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS));
+    NamedCommands.registerCommand("CoralHighOuttake", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_HIGH_POS));
+    NamedCommands.registerCommand("ElevatorHigh", elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE));
+    NamedCommands.registerCommand("AlgaeIntake", intakeSubsystem.IntakeCmd());
+    NamedCommands.registerCommand("AlgaeOuttake", intakeSubsystem.OuttakeCmd());
+    NamedCommands.registerCommand("CoralIntakePos", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_INTAKE_POS));
+    NamedCommands.registerCommand("AlgaeHold", intakeSubsystem.RunIntakeCmd(0.1));
+    NamedCommands.registerCommand("CoralHoldPos", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_BARGE_POS));
+    NamedCommands.registerCommand("ElevatorDown", elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.START_POSE));
+    NamedCommands.registerCommand("CoralHighOuttake+0.5", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_HIGH_POS + 0.5));
+
+    
+
+
+
+
+
   }
 
   /**
@@ -284,7 +301,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("New Auto");
+    return drivebase.getAutonomousCommand("Sussex_1Coral+1Algae");
   }
 
   public void setMotorBrake(boolean brake)

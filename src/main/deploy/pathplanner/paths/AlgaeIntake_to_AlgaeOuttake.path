@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7495000000000003,
-        "y": 3.966499999999999
+        "x": 5.65,
+        "y": 3.975
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4039999999999997,
-        "y": 5.38025
+        "x": 6.8492500000000005,
+        "y": 4.004250000000001
       },
       "isLocked": false,
-      "linkedName": "go 3"
+      "linkedName": "AlgaeIntake"
     },
     {
       "anchor": {
-        "x": 7.61475,
-        "y": 6.16025
+        "x": 7.63425,
+        "y": 5.25
       },
       "prevControl": {
-        "x": 6.054749999999999,
-        "y": 6.989
+        "x": 6.63425,
+        "y": 5.25
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "end 2"
+      "linkedName": "AlgaeOuttake"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.009
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
