@@ -77,7 +77,7 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(File directory)
   {
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
@@ -263,8 +263,8 @@ public class SwerveSubsystem extends SubsystemBase
   {
 // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity() * .125, 4.0 * .125,
-        swerveDrive.getMaximumChassisAngularVelocity() * .125, Units.degreesToRadians(720 * .125));
+        swerveDrive.getMaximumChassisVelocity() * .25, 4.0 * .25,
+        swerveDrive.getMaximumChassisAngularVelocity() * .25, Units.degreesToRadians(720 * .25));
 
 // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(

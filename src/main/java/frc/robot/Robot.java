@@ -116,6 +116,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    m_robotContainer.initElevator();
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -149,7 +150,7 @@ public class Robot extends TimedRobot
     {
       CommandScheduler.getInstance().cancelAll();
     }
-    m_robotContainer.initElevator();
+    // m_robotContainer.initElevator();
     setAprilTag();    
   }
 

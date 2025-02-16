@@ -168,7 +168,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return this.runEnd(
         () -> {
             // runIntake(Constants.IntakeConstants.OUTTAKE_SPEED);
-            intakeMtrLdr.set(-0.20);
+            intakeMtrLdr.set(-0.15);
         },
         () -> {
             // runIntake(Constants.IntakeConstants.STOP_SPEED);

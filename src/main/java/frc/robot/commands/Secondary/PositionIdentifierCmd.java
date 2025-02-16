@@ -145,7 +145,7 @@ public class PositionIdentifierCmd extends Command {
         } else if (snappedInputAngle == 135.0) { //if the joystick is pushed down / right
             Commands.sequence(
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE+0.5), // 0.5 inches
-                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS), // 172.5 degrees
+                rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_MID_POS+5), // 172.5 degrees
                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_LOW_POSE + 1.0), // 1.0 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS), // 240 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.HUMAN_PLAYER_POSE)) // 0.0 inches

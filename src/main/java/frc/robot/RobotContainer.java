@@ -168,12 +168,7 @@ public class RobotContainer
     NamedCommands.registerCommand("CoralHoldPos", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_BARGE_POS));
     NamedCommands.registerCommand("ElevatorDown", elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.START_POSE));
     NamedCommands.registerCommand("CoralHighOuttake+0.5", rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_HIGH_POS + 0.5));
-
-    
-
-
-
-
+    // NamedCommands.registerCommand("initElevator", ElevatorInitCmd);
 
   }
 
@@ -275,7 +270,7 @@ public class RobotContainer
       // engineerXbox.b().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_UP_POSE), rotateSubsystem));
       // engineerXbox.y().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
-      // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
+      engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
       // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.x())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem)); //Set elevator to 4
       // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.y())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem)); //Set elevator to 6
       // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.b())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem)); //Set elevator to 14.75
