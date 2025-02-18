@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.80125,
-        "y": 4.175
+        "y": 4.25
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.14675,
-        "y": 4.204249999999999
+        "y": 4.279249999999999
       },
       "isLocked": false,
       "linkedName": "CoralOuttake"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 5.65,
-        "y": 3.975
+        "y": 4.015
       },
       "prevControl": {
         "x": 6.50115880568787,
-        "y": 3.975
+        "y": 4.015
       },
       "nextControl": null,
       "isLocked": false,

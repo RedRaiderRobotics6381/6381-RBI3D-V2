@@ -126,7 +126,7 @@ public class PositionIdentifierCmd extends Command {
             Commands.sequence(
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE), // 14.9 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_HIGH_POS), // 150 degrees
-                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE + 0.5), // 15.4 inches
+                elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.REEF_HIGH_POSE + 1.5), // 15.4 inches
                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.ALGAE_INTAKE_POS), // 240 degrees
                 elevatorSubsystem.ElevatorHeightCmd(Constants.ElevatorConstants.HUMAN_PLAYER_POSE)) // 0.0 inches
             .schedule();
@@ -161,7 +161,7 @@ public class PositionIdentifierCmd extends Command {
             .schedule();
         }   else if (snappedInputAngle == 180) {
              Commands.sequence(
-                 rotateSubsystem.IntakePosCmd(Constants.ArmConstants.CORAL_INTAKE_POS)).schedule();
+                 rotateSubsystem.RotatePosCmd(Constants.ArmConstants.CORAL_INTAKE_POS)).schedule();
         }   
     }
     
