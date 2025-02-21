@@ -63,6 +63,11 @@ public class RobotContainer
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   
   public boolean hdgModePressed = false; // Flag to track button state
+  private double headingX = 0;
+  private double headingY = 0;
+  private double heading = 0;
+  private double hdgX = 0;
+  private boolean hdgModeChg = false;
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -74,27 +79,27 @@ public class RobotContainer
   // also in this mode the POV buttons are used to quickly face a direction
   // and a button will yaw the robot towards a target.
   // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  Command AbsoluteDriveAdvHdg = new AbsoluteDriveAdvHdg(drivebase,
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
-                                                                                                  OperatorConstants.LEFT_Y_DEADBAND) *
-                                                                                                  DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-                                                                                                  OperatorConstants.LEFT_X_DEADBAND) *
-                                                                                                  DrivebaseConstants.Max_Speed_Multiplier,
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
-                                                                    () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
-                                                                    () -> -MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
-                                                                    () -> driverXbox.getHID().getPOV(),
-                                                                    driverXbox.rightStick());
+  // Command AbsoluteDriveAdvHdg = new AbsoluteDriveAdvHdg(drivebase,
+  //                                                                   () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
+  //                                                                                                 OperatorConstants.LEFT_Y_DEADBAND) *
+  //                                                                                                 DrivebaseConstants.Max_Speed_Multiplier,
+  //                                                                   () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
+  //                                                                                                 OperatorConstants.LEFT_X_DEADBAND) *
+  //                                                                                                 DrivebaseConstants.Max_Speed_Multiplier,
+  //                                                                   () -> MathUtil.applyDeadband(driverXbox.getRightX(),OperatorConstants.LEFT_X_DEADBAND),
+  //                                                                   () -> MathUtil.applyDeadband(driverXbox.getRightY(),OperatorConstants.LEFT_Y_DEADBAND),
+  //                                                                   () -> -MathUtil.applyDeadband(driverXbox.getLeftTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
+  //                                                                   () -> -MathUtil.applyDeadband(driverXbox.getRightTriggerAxis(),OperatorConstants.LEFT_Y_DEADBAND),
+  //                                                                   () -> driverXbox.getHID().getPOV(),
+  //                                                                   driverXbox.rightStick());
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverXbox.getLeftY() * -1,
-                                                                () -> driverXbox.getLeftX() * -1)
-                                                            .withControllerRotationAxis(driverXbox::getRightX)
+                                                                () -> -driverXbox.getLeftY(),
+                                                                () -> -driverXbox.getLeftX())
+                                                            .withControllerRotationAxis(() -> -driverXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(DrivebaseConstants.Max_Speed_Multiplier)
                                                             .scaleRotation(DrivebaseConstants.Max_Speed_Multiplier)
@@ -118,38 +123,101 @@ public class RobotContainer
   //                                                          .headingWhile(true);
   SwerveInputStream driveDirectAngleSnapped = driveAngularVelocity.copy().withControllerHeadingAxis(
                                                                         () -> {
-                                                                          double headingX = driverXbox.getRightX();
-                                                                          double headingY = driverXbox.getRightY();
-                                                                          double angle = Math.toDegrees(Math.atan2(headingX, headingY));
-                                                                          angle = (angle + 360) % 360;
-                                                                          double snappedAngle = Math.round(angle / 60.0) * 60.0;
-                                                                          return Math.sin(Math.toRadians(snappedAngle));
-                                                                        },
+                                                                          // headingX = driverXbox.getRightX();
+                                                                          // headingY = driverXbox.getRightY();
+                                                                          // angle = ((Math.toDegrees(Math.atan2(headingX, headingY)) + 360) % 360);
+                                                                          // snappedAngle = (Math.round(((Math.toDegrees(Math.atan2(headingX, headingY)) + 360) % 360) / 60.0) * 60.0);
+                                                                          if (driverXbox.getHID().getPOV() != -1) {
+                                                                            return Math.sin(Math.toRadians(-driverXbox.getHID().getPOV()));
+                                                                          } else {
+                                                                            if (Math.sqrt(Math.pow(headingX, 2) + Math.pow(headingY, 2)) > 0.2) {
+                                                                            return Math.sin(Math.toRadians((Math.round(((Math.toDegrees(Math.atan2(-driverXbox.getRightX(), -driverXbox.getRightY())) + 360) % 360) / 60.0) * 60.0)));
+                                                                          }
+                                                                          return 0;
+                                                                          }}
+                                                                          // double angle = Math.toDegrees(Math.atan2(headingX, headingY));
+                                                                          // angle = (angle + 360) % 360;
+                                                                          // double snappedAngle = Math.round(angle / 60.0) * 60.0;
+                                                                          // return Math.sin(Math.toRadians(snappedAngle));
+                                                                        ,
                                                                         () -> {
-                                                                          double headingX = driverXbox.getRightX();
-                                                                          double headingY = driverXbox.getRightY();
-                                                                          double angle = Math.toDegrees(Math.atan2(headingX, headingY)) - 0;
-                                                                          angle = (angle + 360) % 360;
-                                                                          double snappedAngle = Math.round(angle / 60.0) * 60.0;
-                                                                          return Math.cos(Math.toRadians(snappedAngle));
-                                                                        }
-                                                                      )
+                                                                          // double headingX = driverXbox.getRightX();
+                                                                          // double headingY = driverXbox.getRightY();
+                                                                          if (driverXbox.getHID().getPOV() != -1) {
+                                                                            return Math.cos(Math.toRadians(driverXbox.getHID().getPOV()));
+                                                                          } else {
+                                                                            if (Math.sqrt(Math.pow(headingX, 2) + Math.pow(headingY, 2)) > 0.2) {
+                                                                            return Math.cos(Math.toRadians((Math.round(((Math.toDegrees(Math.atan2(-driverXbox.getRightX(), -driverXbox.getRightY())) + 360) % 360) / 60.0) * 60.0)));
+                                                                          }
+                                                                          return 0;
+                                                                        }}
+                                                                        // if (driverXbox.getHID().getPOV() != -1) {
+                                                                        //     return Math.cos(Math.toRadians(driverXbox.getHID().getPOV()));
+                                                                        //   } else if (Math.sqrt(Math.pow(headingX, 2) + Math.pow(headingY, 2)) > 0.11) {
+                                                                        //     return Math.cos(getSnappedAngle(Math.toDegrees(Math.atan2(headingX, headingY))));
+                                                                        //   } else {
+                                                                        //     return Math.cos(getSnappedIdleAngle(drivebase.getHeading().getDegrees()));
+                                                                        //   }
+                                                                        // }
+                                                                      
                                                                       .headingWhile(true)
                                                                       .scaleTranslation(DrivebaseConstants.Max_Speed_Multiplier)
                                                                       .scaleRotation(DrivebaseConstants.Max_Speed_Multiplier)
                                                                       .cubeTranslationControllerAxis(true)
-                                                                      .deadband(0.1);
+                                                                      .deadband(0.1));
     /**
    * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
    */
-  SwerveInputStream driveDirectAnglePOV = driveAngularVelocity.copy().withControllerHeadingAxis(() -> Math.sin(Math.toRadians(-driverXbox.getHID().getPOV())),
-                                                                                                () -> Math.cos(Math.toRadians(driverXbox.getHID().getPOV())))
-                                                                                                .headingWhile(true)
-                                                                                                .scaleTranslation(DrivebaseConstants.Max_Speed_Multiplier)
-                                                                                                .scaleRotation(DrivebaseConstants.Max_Speed_Multiplier)
-                                                                                                .cubeTranslationControllerAxis(true)
-                                                                                                .deadband(0.1);
+  // SwerveInputStream driveDirectAnglePOV = driveAngularVelocity.copy().withControllerHeadingAxis(() -> Math.sin(Math.toRadians(-driverXbox.getHID().getPOV())),
+  //                                                                                               () -> Math.cos(Math.toRadians(driverXbox.getHID().getPOV())))
+  //                                                                                               .headingWhile(true)
+  //                                                                                               .scaleTranslation(DrivebaseConstants.Max_Speed_Multiplier)
+  //                                                                                               .scaleRotation(DrivebaseConstants.Max_Speed_Multiplier)
+  //                                                                                               .cubeTranslationControllerAxis(true)
+  //                                                                                               .deadband(0.1);
 
+// public double getSnappedAngle(double heading){
+//   double angle = (heading + 360) % 360;
+//   double snappedAngle = Math.round(angle / 60.0) * 60.0;
+//   return Math.toRadians(snappedAngle);
+// }
+// public double getSnappedIdleAngle(double heading){
+//   double angle = (heading + 180) % 360;
+//   double snappedAngle = Math.round(angle / 60.0) * 60.0;
+//   return Math.toRadians(snappedAngle);
+// }
+  // SwerveInputStream driveDirectAngleSnapped = driveAngularVelocity.copy().withControllerHeadingAxis(
+  //                                                                       () -> {
+  //                                                                         double headingX = driverXbox.getRightX();
+  //                                                                         double headingY = driverXbox.getRightY();
+  //                                                                         if(Math.sqrt(Math.pow(headingX, 2) + Math.pow(headingY, 2)) > 0.1){
+  //                                                                           double angle = Math.toDegrees(Math.atan2(headingX, headingY));
+  //                                                                           angle = (angle + 360) % 360;
+  //                                                                           double snappedAngle = Math.round(angle / 60.0) * 60.0;
+  //                                                                           return Math.sin(Math.toRadians(snappedAngle));
+  //                                                                         } else{
+  //                                                                           double angle = drivebase.getHeading().getDegrees();
+  //                                                                           angle = (angle + 180) % 360;
+  //                                                                           double snappedAngle = Math.round(angle / 60.0) * 60.0;
+  //                                                                           return Math.sin(Math.toRadians(snappedAngle));
+  //                                                                         }
+  //                                                                       },
+  //                                                                       () -> {
+  //                                                                         double headingX = driverXbox.getRightX();
+  //                                                                         double headingY = driverXbox.getRightY();
+  //                                                                         if(Math.sqrt(Math.pow(headingX, 2) + Math.pow(headingY, 2)) > 0.1){
+  //                                                                           double angle = Math.toDegrees(Math.atan2(headingX, headingY)) - 0;
+  //                                                                           angle = (angle + 360) % 360;
+  //                                                                           double snappedAngle = Math.round(angle / 60.0) * 60.0;
+  //                                                                           System.out.println(snappedAngle);
+  //                                                                           return Math.cos(Math.toRadians(snappedAngle));
+  //                                                                         } else {
+  //                                                                           double angle = drivebase.getHeading().getDegrees();
+  //                                                                           angle = (angle + 180) % 360;
+  //                                                                           double snappedAngle = Math.round(angle / 60.0) * 60.0;
+  //                                                                           System.out.println(snappedAngle);
+  //                                                                           return Math.cos(Math.toRadians(snappedAngle));
+  //
 
   // // Applies deadbands and inverts controls because joysticks
   // // are back-right positive while robot
@@ -211,7 +279,7 @@ public class RobotContainer
    */
   private void configureBindings()
   { 
-    Command driveFieldOrientedAnglePOV      = drivebase.driveFieldOriented(driveDirectAnglePOV);
+    // Command driveFieldOrientedAnglePOV      = drivebase.driveFieldOriented(driveDirectAnglePOV);
     Command driveFieldOrientedAngleSnapped  = drivebase.driveFieldOriented(driveDirectAngleSnapped);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     // (Condition) ? Return-On-True : Return-on-False
@@ -235,10 +303,10 @@ public class RobotContainer
     //   drivebase.setDefaultCommand(driveFieldOrientedAnglePOV);
     // }
     // else if (hdgModePressed && driverXbox.getHID().getPOV() == -1){
-      drivebase.setDefaultCommand(driveFieldOrientedAngleSnapped);
+      // drivebase.setDefaultCommand(driveFieldOrientedAngleSnapped);
     // }
 
-    // drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // drivebase.setDefaultCommand(driveFieldOrientedAnglePOV);
     // drivebase.setDefaultCommand(driveFieldOrientedAngleSnapped);
 
@@ -256,7 +324,25 @@ public class RobotContainer
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
     } else
     {
-      driverXbox.rightStick().onTrue(Commands.runOnce(() -> hdgModePressed = !hdgModePressed));
+      driverXbox.rightStick().onTrue(Commands.runOnce(() -> {
+        hdgModePressed = !hdgModePressed;
+        if (hdgModePressed){
+          // snappedAngle = 180.0;
+          
+          heading = drivebase.getHeading().getDegrees();
+          driveFieldOrientedAngleSnapped.schedule();
+        }
+        else{
+          driveFieldOrientedAnglularVelocity.schedule();
+        }
+      }));
+
+      // // Continuously check the POV state and switch to POV mode if necessary
+      // new Trigger(() -> driverXbox.getHID().getPOV() != -1)
+      //     .onTrue(Commands.runOnce(() -> {
+      //       drivebase.setDefaultCommand(driveFieldOrientedAnglePOV);
+      //       hdgModePressed = true;
+      //     }));
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
 
