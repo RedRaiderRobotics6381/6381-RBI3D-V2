@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -134,6 +136,11 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+    if(DriverStation.getAlliance().get() == Alliance.Blue){
+    m_robotContainer.drivebase.resetOdometry(new Pose2d(7.77, 5.14, new Rotation2d(Math.PI)));
+  } else {
+    m_robotContainer.drivebase.resetOdometry(new Pose2d(9.276, 2.915, new Rotation2d()));
+  }
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -186,6 +193,7 @@ public class Robot extends TimedRobot
   public void teleopPeriodic()
   {
     m_robotContainer.spencerButtons();
+    m_robotContainer.getAprilTag();
   }
 
   @Override
