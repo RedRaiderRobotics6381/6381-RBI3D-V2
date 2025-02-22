@@ -13,7 +13,7 @@ public class VisionRotateCmd extends Command{
     private RotateSubsystem rotateSubsystem;
     private SwerveSubsystem swerveSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
-    private Vision vision;
+    // private Vision vision;
     private double BargeXDist;
     private double elevatorHeight;
     private double robotHeight = 35.75;
@@ -23,15 +23,15 @@ public class VisionRotateCmd extends Command{
         this.rotateSubsystem = rotateSubsystem;
         this.swerveSubsystem = swerveSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        vision = new Vision(this.swerveSubsystem::getPose, null);
+        // vision = new Vision(this.swerveSubsystem::getPose, null);
     }
     @Override
     public void execute(){
-        //
-        BargeXDist = vision.getAprilTagPose(21, new Transform2d()).getX();
-        BargeXDist = 116.19 - BargeXDist;
+        BargeXDist = 325.68 - swerveSubsystem.getPose().getX() * 39.3701;
         elevatorHeight = 3 * elevatorSubsystem.elevEncLdr.getPosition();
-        angle = Math.toDegrees(Math.atan2(bargeHeight - robotHeight - elevatorHeight, BargeXDist)) - 240;
-        rotateSubsystem.setArm(angle);
+        angle = 240 - Math.toDegrees(Math.atan2(bargeHeight - robotHeight - elevatorHeight, BargeXDist));
+        System.out.println("Angle: " + angle);
+
+       // rotateSubsystem.setArm(angle);
     }
 }

@@ -29,6 +29,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Secondary.ElevatorInitCmd;
 // import frc.robot.commands.Secondary.PositionIdentifierCmd;
 import frc.robot.commands.Secondary.PositionIdentifierCmd;
+import frc.robot.commands.Secondary.VisionRotateCmd;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdvHdg;
 import frc.robot.subsystems.Secondary.ElevatorSubsystem;
 import frc.robot.subsystems.Secondary.IntakeSubsystem;
@@ -38,6 +39,7 @@ import frc.robot.subsystems.Secondary.RotateSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 // import swervelib.SwerveDrive;
+import swervelib.SwerveInputStream;
 
 import java.io.File;
 // import swervelib.SwerveInputStream;
@@ -63,6 +65,8 @@ public class RobotContainer
   public final RotateSubsystem rotateSubsystem = new RotateSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
+  private final VisionRotateCmd visionRotateCmd = new VisionRotateCmd(rotateSubsystem, drivebase, elevatorSubsystem);
 
   public double currentSnappedAngle = 0;
   public double snappedAngle = 0;       
@@ -94,13 +98,13 @@ public class RobotContainer
   // /**
   //  * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
   //  */
-  // SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-  //                                                               () -> driverXbox.getLeftY() * -1,
-  //                                                               () -> driverXbox.getLeftX() * -1)
-  //                                                           .withControllerRotationAxis(driverXbox::getRightX)
-  //                                                           .deadband(OperatorConstants.DEADBAND)
-  //                                                           .scaleTranslation(0.8)
-  //                                                           .allianceRelativeControl(true);
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                                () -> driverXbox.getLeftY() * -1,
+                                                                () -> driverXbox.getLeftX() * -1)
+                                                            .withControllerRotationAxis(driverXbox::getRightX)
+                                                            .deadband(OperatorConstants.DEADBAND)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
 
   // /**
   //  * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
@@ -230,7 +234,7 @@ public class RobotContainer
 
       // engineerXbox.leftStick().and(engineerXbox.x()).whileTrue(intakeSubsystem.IntakeCmd());
       // engineerXbox.leftStick().and(engineerXbox.y()).whileTrue(intakeSubsystem.OuttakeCmd());
-      engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
+     // engineerXbox.leftBumper().whileTrue(intakeSubsystem.IntakeCmd());
       engineerXbox.rightBumper().whileTrue(intakeSubsystem.OuttakeCmd());
 
       // engineerXbox.a().whileTrue(new PositionIdentifierCmd(elevatorSubsystem,
@@ -271,6 +275,7 @@ public class RobotContainer
       // engineerXbox.y().onTrue(Commands.run(() -> rotateSubsystem.setArm(Constants.ArmConstants.ARM_MIDDLE_POSE), rotateSubsystem));
 
       engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.a())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.START_POSE), elevatorSubsystem)); //Set elevator to 0
+      engineerXbox.leftBumper().whileTrue(visionRotateCmd);
       // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.x())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_LOW_POSE), elevatorSubsystem)); //Set elevator to 4
       // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.y())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_MIDDLE_POSE), elevatorSubsystem)); //Set elevator to 6
       // engineerXbox.leftStick().negate().and(engineerXbox.rightStick().and(engineerXbox.b())).onTrue(Commands.run(() -> elevatorSubsystem.setElevatorHeight(Constants.ElevatorConstants.REEF_HIGH_POSE), elevatorSubsystem)); //Set elevator to 14.75
