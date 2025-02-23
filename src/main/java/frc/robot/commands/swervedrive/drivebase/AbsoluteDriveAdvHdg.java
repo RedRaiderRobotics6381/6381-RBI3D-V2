@@ -28,7 +28,8 @@ public class AbsoluteDriveAdvHdg extends Command
 {
 
   private final SwerveSubsystem swerve;
-  private final DoubleSupplier  vX, vY;
+  private DoubleSupplier  vX;
+  private final DoubleSupplier vY;
   private final DoubleSupplier  oX, oY;
   private final DoubleSupplier leftY, rightY;
   private final DoubleSupplier lookPOV;
@@ -85,6 +86,7 @@ public class AbsoluteDriveAdvHdg extends Command
     // resetHeading = true;
     angVelMode = true;
     hdgPOV = false;
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

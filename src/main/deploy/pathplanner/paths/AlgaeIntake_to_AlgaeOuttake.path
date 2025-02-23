@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.8492500000000005,
-        "y": 4.044250000000001
+        "x": 7.079086069727293,
+        "y": 4.845696501475146
       },
       "isLocked": false,
       "linkedName": "AlgaeIntake"
@@ -20,8 +20,8 @@
         "y": 5.25
       },
       "prevControl": {
-        "x": 6.634,
-        "y": 5.25
+        "x": 7.371271258490227,
+        "y": 5.317127974310174
       },
       "nextControl": null,
       "isLocked": false,

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.14675,
-        "y": 4.279249999999999
+        "x": 6.065294290285745,
+        "y": 4.221529464634837
       },
       "isLocked": false,
       "linkedName": "CoralOuttake"
@@ -20,8 +20,8 @@
         "y": 4.015
       },
       "prevControl": {
-        "x": 6.50115880568787,
-        "y": 4.015
+        "x": 6.084807813196092,
+        "y": 4.002965591866487
       },
       "nextControl": null,
       "isLocked": false,
